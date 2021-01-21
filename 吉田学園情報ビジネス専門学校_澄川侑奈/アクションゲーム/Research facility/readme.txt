@@ -13,6 +13,10 @@
 
 ・Visual Studio 2015のプロジェクトが入ってます。
 
+□実行ファイル
+
+・Research facility通常exeとResearch facility_フルスクリーンexeが入っています。
+
 □Research facility_アピールポイント
 
 ・今回作成した2Dアクションゲームのアピールポイントを書いてます。
