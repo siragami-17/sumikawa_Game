@@ -295,17 +295,6 @@ void UpdatePlayer(void)
 	pVtx[2].pos = D3DXVECTOR3(g_Player.pos.x + MAX_PLAYER_SIZE_X, g_Player.pos.y, 0.0f);
 	pVtx[3].pos = D3DXVECTOR3(g_Player.pos.x + MAX_PLAYER_SIZE_X, g_Player.pos.y - MAX_PLAYER_SIZE_Y, 0.0f);
 
-	//if ((g_nCountersAnimationCun % 5) == 0 &&g_Player.bJump == false && g_Player.bMove == true)//%○は割る数)==○はあまり
-	//{//カウント制御
-	//	g_nCountersAnimationCntPlayer++;
-
-	//	//アニメーションの頂点情報の設定
-	//	//pVtx[0].tex = D3DXVECTOR2(0.0f + g_nCountersAnimationPlayer * 0.25f, 0.5f + g_Player.fPlayerV);//+ g_Player.fPlayerVをたすことで左右ができる
-	//	//pVtx[1].tex = D3DXVECTOR2(0.0f + g_nCountersAnimationPlayer * 0.25f, 0.0f + g_Player.fPlayerV);
-	//	//pVtx[2].tex = D3DXVECTOR2(0.25f + g_nCountersAnimationPlayer * 0.25f, 0.5f + g_Player.fPlayerV);
-	//	//pVtx[3].tex = D3DXVECTOR2(0.25f + g_nCountersAnimationPlayer * 0.25f, 0.0f + g_Player.fPlayerV);
-	//}
-
 	if (g_Player.move.y >= 20 && g_Player.bJump == true)
 	{//ブロック2段以上から落ちた時に死亡フラグをたてる
 		g_Player.bFall = true;
@@ -330,9 +319,6 @@ void UpdatePlayer(void)
 	pVtx[1].tex = D3DXVECTOR2(1.0f / MAX_ANIMATION_PATTERN * ((float)g_nCountersAnimationPlayer), 1.0f / TEXTURE_PLAYER_Y * (g_fTexY));
 	pVtx[2].tex = D3DXVECTOR2(1.0f / MAX_ANIMATION_PATTERN * ((float)g_nCountersAnimationPlayer + 1), 1.0f / TEXTURE_PLAYER_Y * (g_fTexY + 1));
 	pVtx[3].tex = D3DXVECTOR2(1.0f / MAX_ANIMATION_PATTERN * ((float)g_nCountersAnimationPlayer + 1), 1.0f / TEXTURE_PLAYER_Y * (g_fTexY));
-
-
-
 
 	if (g_Player.state == PLAYERSTATE_DAMAGE)
 	{

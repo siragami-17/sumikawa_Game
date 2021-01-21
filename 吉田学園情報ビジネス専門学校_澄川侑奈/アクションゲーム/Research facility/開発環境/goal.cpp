@@ -47,7 +47,7 @@ HRESULT Initdoor(void)
 
 	// テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/door_00.png", &g_pTexturedoor);		// 扉
-	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Enter.png", &g_pTextureEnter);			// エンターキー
+	//D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Enter.png", &g_pTextureEnter);		// エンターキー
 
 	// 頂点バッファの生成
 	if (FAILED(pDevice->CreateVertexBuffer
