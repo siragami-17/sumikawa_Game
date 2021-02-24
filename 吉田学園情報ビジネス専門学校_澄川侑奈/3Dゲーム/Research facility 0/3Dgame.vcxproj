@@ -155,6 +155,8 @@
     <ClCompile Include="beginning.cpp" />
     <ClCompile Include="billboard.cpp" />
     <ClCompile Include="block.cpp" />
+    <ClCompile Include="collision.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Bookshelf.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -165,6 +167,7 @@
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="light.cpp" />
+    <ClCompile Include="Logo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="model.cpp" />
@@ -172,12 +175,14 @@
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="polygon.cpp" />
+    <ClCompile Include="PressEnter.cpp" />
     <ClCompile Include="ranking.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="Title_Player.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="Xcontroller.cpp" />
@@ -187,6 +192,8 @@
     <ClInclude Include="beginning.h" />
     <ClInclude Include="billboard.h" />
     <ClInclude Include="block.h" />
+    <ClInclude Include="collision.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="Bookshelf.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
@@ -197,6 +204,7 @@
     <ClInclude Include="Key.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="Logo.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="meshfild.h" />
     <ClInclude Include="model.h" />
@@ -204,12 +212,14 @@
     <ClInclude Include="Pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="polygon.h" />
+    <ClInclude Include="PressEnter.h" />
     <ClInclude Include="ranking.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="Title_Player.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="Xcontroller.h" />

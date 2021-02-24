@@ -115,7 +115,7 @@ void UpdateTutorial(void)
 		if (GetkeyboardTrgger(DIK_RETURN) == true)
 		{//　エンターキーを押した
 		 //　ゲーム画面に移動
-			SetFade(FADE_OUT, MODE_BEGINNING);
+			SetFade(FADE_OUT, MODE_GAME);
 
 			//音止める
 			StopSound();

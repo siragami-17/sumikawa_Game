@@ -15,8 +15,11 @@
 typedef struct
 {
 	D3DXVECTOR3 pos;		// 位置
+	D3DXVECTOR3 keyVec;		// 鍵とプレイヤーのベクトル
 	float fWidth;			// 幅
 	float fHeight;			// 高さ
+	float fLength;			// 長さ
+	float fRadius;			// 半径
 	bool bUse;				// 使用しているかどうか
 } KEY;
 

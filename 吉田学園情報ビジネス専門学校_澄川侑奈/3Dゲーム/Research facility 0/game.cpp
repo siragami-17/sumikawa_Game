@@ -13,7 +13,7 @@
 #include "wall.h"			// 壁
 #include "Key.h"			// 鍵
 #include "bullet.h"			// 弾
-#include "block.h"			// ブロック
+#include "Goal.h"			// ゴール
 #include "mouse.h"			// マウス
 #include "Xcontroller.h"	// Xinput
 #include "fade.h"			// フェード
@@ -21,6 +21,7 @@
 #include "time.h"			// タイマー
 #include "heart.h"			// ハート
 #include "Pause.h"			// ポーズ
+#include "block.h"			// ブロック
 
 //-------------------------------------------------------------------------------
 //	グローバル変数
@@ -53,7 +54,9 @@ HRESULT InitGame(void)
 	// Xファイルの初期化処理
 	InitPlayer();
 
-	// ブロックの初期化処理
+	// ゴールの初期化処理
+//	InitGoal();
+
 	InitBlock();
 
 	// 弾の初期化処理
@@ -93,8 +96,10 @@ void UninitGame(void)
 	// 地面の終了処理
 	UninitMeshfild();
 
-	// ブロックの終了処理
 	UninitBlock();
+
+	// ゴールの終了処理
+//	UninitGoal();
 
 	// Xファイルの終了処理
 	UninitPlayer();
@@ -158,7 +163,9 @@ void UpdateGame(void)
 			// Xファイルの更新処理
 			UpdatePlayer();
 
-			// ブロックの更新処理
+			// ゴールの更新処理
+//			UpdateGoal();
+
 			UpdateBlock();
 
 			// 影の更新処理
@@ -187,20 +194,18 @@ void DrawGame(void)
 	// 壁の描画処理
 	DrawWall();
 
-	// 鍵の描画処理
-	//DrawKey();
+	// 地面の描画処理
+	DrawMeshfild();
 
-	// 影の描画処理
-	DrawShadow();
 
 	// Xファイルの描画処理
 	DrawPlayer();
 
-	// ブロックの描画処理
+	// ゴールの描画処理
 	DrawBlock();
 
-	// 地面の描画処理
-	DrawMeshfild();
+	// 鍵の描画処理
+	DrawKey();
 
 	// 弾の描画処理
 	DrawBullet();
@@ -210,6 +215,10 @@ void DrawGame(void)
 
 	// ハートの描画処理
 	DrawHeart();
+
+
+	// 影の描画処理
+	DrawShadow();
 
 	if (g_bPause == true)
 	{//ポーズされた

@@ -1,6 +1,3 @@
-﻿  player.cpp
-c:\users\student\desktop\3d game\3dgame\player.cpp(261): warning C4101: 'nNumVtx': ローカル変数は 1 度も使われていません。
-c:\users\student\desktop\3d game\3dgame\player.cpp(263): warning C4101: 'pVtxBuff': ローカル変数は 1 度も使われていません。
-c:\users\student\desktop\3d game\3dgame\player.cpp(262): warning C4101: 'sizeFVF': ローカル変数は 1 度も使われていません。
-  3Dgame.vcxproj -> C:\Users\student\Desktop\3D game\3Dgame\Debug\3Dgame.exe
-  3Dgame.vcxproj -> C:\Users\student\Desktop\3D game\3Dgame\Debug\3Dgame.pdb (Full PDB)
+﻿  collision.cpp
+  3Dgame.vcxproj -> C:\Users\student\Desktop\3D game\Research facility 0\Debug\3Dgame.exe
+  3Dgame.vcxproj -> C:\Users\student\Desktop\3D game\Research facility 0\Debug\3Dgame.pdb (Full PDB)

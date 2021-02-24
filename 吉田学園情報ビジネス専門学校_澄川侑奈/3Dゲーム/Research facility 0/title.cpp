@@ -9,6 +9,9 @@
 #include "sound.h"				// BGM
 #include "keyboard.h"			// キーボード
 #include "Xcontroller.h"		// Xinput
+#include "Title_Player.h"		// キャラ
+#include "Logo.h"				// ロゴ
+#include "PressEnter.h"			// エンターテクスチャ
 
 //-------------------------------------------------------------------------------
 //	マクロ定義
@@ -36,7 +39,7 @@ HRESULT InitTitle(void)
 	PlaySound(SOUND_LABEL_TITLE);		// タイトルBGM
 
 	//テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/title.jpg", &g_pTexTitle);		// タイトル画像
+	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/title_BG.png", &g_pTexTitle);		// タイトル画像
 
 	// 頂点バッファの生成
 	if (FAILED(pDevice->CreateVertexBuffer
@@ -80,6 +83,15 @@ HRESULT InitTitle(void)
 	// 頂点バッファをアンロックする
 	g_pVtxBuffTitle->Unlock();
 
+	// キャラの初期化処理
+	InitTitle_PLayer();
+
+	// ロゴの初期化処理
+	InitLogo();
+
+	// エンターの初期化処理
+	InitPressEnter();
+
 	return S_OK;
 }
 
@@ -88,6 +100,15 @@ HRESULT InitTitle(void)
 //-------------------------------------------------------------------------------
 void UninitTitle(void)
 {
+	// ロゴの終了処理
+	UninitLogo();
+
+	// キャラの終了処理
+	UninitTitle_PLayer();
+
+	// エンターの終了処理
+	UninitPressEnter();
+
 	// 頂点バッファの開放
 	if (g_pVtxBuffTitle != NULL)
 	{
@@ -121,6 +142,15 @@ void UpdateTitle(void)
 			StopSound();
 		}
 	}
+
+	// キャラの更新処理
+	UpdateTitle_PLayer();
+
+	// ロゴの更新処理
+	UpdateLogo();
+
+	// エンターの更新処理
+	UpdatePressEnter();
 }
 
 //-------------------------------------------------------------------------------
@@ -145,4 +175,13 @@ void DrawTitle(void)
 	(D3DPT_TRIANGLESTRIP,		// プリミティブの種類
 		0,						// 描画を開始する頂点インデックス
 		2);						// 描画するプリミティブ数
+
+	// エンターの描画処理
+	DrawPressEnter();
+
+	// キャラの描画処理
+	DrawTitle_PLayer();
+
+	// ロゴの描画処理
+	DrawLogo();
 }

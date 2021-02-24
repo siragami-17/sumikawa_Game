@@ -10,11 +10,11 @@
 //--------------------------------------------------------------------------------
 // グローバル変数
 //--------------------------------------------------------------------------------
-#define MAX_KEY			(1)		// テクスチャの最大数
-#define MAX_KEY_COUNTER	(10)		//鍵のスピード
-#define MAX_KEY_PATTERN	(5)			//鍵の個数
-#define MAX_KEY_X		(50)		//鍵X
-#define MAX_KEY_Y		(60)		//鍵Y
+#define MAX_KEY			(1)			// テクスチャの最大数
+#define MAX_KEY_COUNTER	(10)		// 鍵のスピード
+#define MAX_KEY_PATTERN	(5)			// 鍵の個数
+#define MAX_KEY_X		(50/2)		// 鍵X
+#define MAX_KEY_Y		(60/2)		// 鍵Y
 
 //--------------------------------------------------------------------------------
 // グローバル変数
@@ -46,12 +46,15 @@ HRESULT InitKey(void)
 	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Key.png", &g_pTextureKey);
 
 	// 構造体の初期化
-	 g_Key.pos= D3DXVECTOR3(50.0f, 0.0f, 0.0f);		// 位置
-	 g_Key.fWidth = 0.0f;								//幅
-	 g_Key.fHeight = 0.0f;								//高さ
-	 g_Key.bUse = true;									//使用しているかどうか
+	g_Key.pos = D3DXVECTOR3(100.0f, 30.0f, 0.0f);			// 位置
+	g_Key.keyVec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 位置
+	g_Key.fWidth = 0.0f;								// 幅
+	g_Key.fHeight = 0.0f;								// 高さ
+	g_Key.fLength = 0.0f;								// 長さ
+	g_Key.fRadius = (float)MAX_KEY_X;					// 半径
+	g_Key.bUse = true;									// 使用しているかどうか
 
-	// 頂点バッファの生成
+   // 頂点バッファの生成
 	if (FAILED(pDevice->CreateVertexBuffer
 	(sizeof(VERTEX_3D) * 4,								// 確保するバッファサイズ
 		D3DUSAGE_WRITEONLY,
@@ -67,10 +70,10 @@ HRESULT InitKey(void)
 	g_pVtxBuffKey->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標(X.Y.Z)
-	pVtx[0].pos = D3DXVECTOR3(g_Key.pos.x - 25.0f, g_Key.pos.y + 50.0f,g_Key.pos.z + 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(g_Key.pos.x + 25.0f, g_Key.pos.y + 50.0f,g_Key.pos.z + 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(g_Key.pos.x - 25.0f, g_Key.pos.y - 0.0f, g_Key.pos.z + 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(g_Key.pos.x + 25.0f, g_Key.pos.y - 0.0f, g_Key.pos.z + 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(-MAX_KEY_X,MAX_KEY_Y , 0.0f);
+	pVtx[1].pos = D3DXVECTOR3( MAX_KEY_X,MAX_KEY_Y , 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(-MAX_KEY_X,-MAX_KEY_Y, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3( MAX_KEY_X,-MAX_KEY_Y, 0.0f);
 
 	// 法線ベクトルの設定
 	pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
@@ -85,10 +88,10 @@ HRESULT InitKey(void)
 	pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 
 	// 頂点情報の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[1].tex = D3DXVECTOR2(0.2f, 1.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[3].tex = D3DXVECTOR2(0.2f, 0.0f);
+	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(0.2f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(0.2f, 1.0f);
 
 	// 頂点バッファをアンロックする
 	g_pVtxBuffKey->Unlock();
@@ -121,30 +124,30 @@ void UninitKey(void)
 //--------------------------------------------------------------------------------
 void UpdateKey(void)
 {
-	VERTEX_2D *pVtx;
+	VERTEX_3D *pVtx;
 
 	// プレイヤーの情報
 	Player * pPlayer;
 	pPlayer = GetPlayer();
 
-	//鍵とプレイヤーの当たり判定
+	// 鍵とプレイヤーの当たり判定
 	if (g_Key.bUse == true)
-	{	//使用しているかどうか
-		if (pPlayer->pos.x - (150 / 2) < g_Key.pos.x + (MAX_KEY_X / 2) &&		//左
-			pPlayer->pos.x + (150 / 2) > g_Key.pos.x - (MAX_KEY_X / 2) &&		//右
-			pPlayer->pos.y - 150 < g_Key.pos.y + (MAX_KEY_Y / 2) &&			//上
-			pPlayer->pos.y > g_Key.pos.y - (MAX_KEY_Y / 2))									//下
-		{
+	{// 使用しているかどうか
+		g_Key.keyVec = pPlayer->pos - g_Key.pos;														// 鍵のベクトルを求める
+		g_Key.fLength = sqrtf((g_Key.keyVec.x*g_Key.keyVec.x) + (g_Key.keyVec.z*g_Key.keyVec.z));		// 鍵とプレイヤーの距離
 
+		if (g_Key.fLength < g_Key.fRadius)
+		{// 長さが半径より小さくなった
 
-
-											//鍵を見えなくする
+			//鍵を消す
 			g_Key.bUse = false;
 
+			// 鍵をゲットした
+			pPlayer->bGetKey = true;
 		}
 	}
 
-
+	// アニメーションの処理
 	g_nCountersAnimationCnt++;
 
 	//頂点バッファをロックし、頂点情報へのポインタを取得
@@ -156,10 +159,10 @@ void UpdateKey(void)
 		g_nCountersAnimationKey = (g_nCountersAnimationKey + 1) % MAX_KEY_PATTERN;	//アニメーションのコマ数
 
 		//アニメーションの頂点情報の設定
-		pVtx[0].tex = D3DXVECTOR2(g_Key.pos.x + 0.2f + g_nCountersAnimationKey * 0.2f, g_Key.pos.y + 1.0f);
-		pVtx[1].tex = D3DXVECTOR2(g_Key.pos.x - 0.0f + g_nCountersAnimationKey * 0.2f, g_Key.pos.y + 1.0f);
-		pVtx[2].tex = D3DXVECTOR2(g_Key.pos.x + 0.2f + g_nCountersAnimationKey * 0.2f, g_Key.pos.y - 0.0f);
-		pVtx[3].tex = D3DXVECTOR2(g_Key.pos.x - 0.0f + g_nCountersAnimationKey * 0.2f, g_Key.pos.y - 0.0f);
+		pVtx[0].tex = D3DXVECTOR2(0.0f + g_nCountersAnimationKey * 0.2f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(0.2f + g_nCountersAnimationKey * 0.2f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f + g_nCountersAnimationKey * 0.2f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(0.2f + g_nCountersAnimationKey * 0.2f, 1.0f);
 	}
 
 	//頂点バッファをアンロックする
@@ -175,11 +178,22 @@ void DrawKey(void)
 	D3DXMATRIX mtxView;					// ビューマトリックスの取得
 	D3DXMATRIX mtxRot, mtxTrans;		// 計算用のマトリックス
 
-										// デバイスの取得
+	// デバイスの取得
 	pDevice = GetDevice();
+
+
+
 
 	// ライティングを無効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	// アルファテスト
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 120);
+
+
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&g_mtxWorldKey);
@@ -209,12 +223,28 @@ void DrawKey(void)
 	// ビルボードのテクスチャの設定
 	pDevice->SetTexture(0, g_pTextureKey);
 
-	// ビルボードの描画
-	pDevice->DrawPrimitive
-	(D3DPT_TRIANGLESTRIP,		// プリミティブの種類
-		0,						// 描画を開始する頂点インデックス
-		2);						// 描画するプリミティブ数
+	if (g_Key.bUse == true)
+	{
+		// ビルボードの描画
+		pDevice->DrawPrimitive
+		(D3DPT_TRIANGLESTRIP,		// プリミティブの種類
+			0,						// 描画を開始する頂点インデックス
+			2);						// 描画するプリミティブ数
+	}
+
+
+
+
+	// アルファテスト
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
 
 	// ライティングを無効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+
+
+
 }

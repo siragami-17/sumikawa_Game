@@ -4,30 +4,31 @@
 //	Author:Yuna Sumikawa
 //
 //--------------------------------------------------------------------------------
-#include "player.h"			// プレイヤー
-#include "keyboard.h"		// キーボード
-#include "camera.h"			// カメラ
-#include "block.h"			// ブロック
-#include "meshfild.h"		// 地面
+#include "player.h"					// プレイヤー
+#include "keyboard.h"				// キーボード
+#include "camera.h"					// カメラ
+#include "Goal.h"					// ゴール
+#include "meshfild.h"				// 地面
+#include "shadow.h"					// 影
 
 //--------------------------------------------------------------------------------
 //	マクロ定義
 //--------------------------------------------------------------------------------
-#define MAX_MOVE		(5)			// 移動量
+#define MAX_MOVE		(0.3f)		// 移動量
 #define MAX_ROT			(0.1f)		// 向き
 
 #define MAX_FLAME		(40)		// 再生フレーム数
 #define MAX_COUNTER		(10)		// モーションカウンター
 
-#define MAX_JUMP		(-20)		//ジャンプ
+#define MAX_JUMP		(2)		// ジャンプ
 
+#define MAX_PLAYER		(20)		// モデル数
 
 //--------------------------------------------------------------------------------
 // グローバル変数
 //--------------------------------------------------------------------------------
 Player g_player;					// プレイヤーの情報	
-
-int nDifference;					// 差分
+Model g_Model;						// プレイヤーの情報
 											
 //--------------------------------------------------------------------------------
 // 初期化処理
@@ -37,233 +38,205 @@ HRESULT InitPlayer(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// パーツ数の初期化
-	g_player.nNumModel = 14;										
+	// プレイヤーの最初のモーション
+	g_player.motionType = MOTION_NONE;
 
-	// Xファイルの読み込み
-	// 体
-	D3DXLoadMeshFromX("data/MODEL/00_body.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[0].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[0].nNumMat,								// マテリアル数
-		&g_player.aModel[0].pMesh);									// メッシュ(頂点情報)
-
-	// 顔
-	D3DXLoadMeshFromX("data/MODEL/01_head.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[1].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[1].nNumMat,								// マテリアル数
-		&g_player.aModel[1].pMesh);									// メッシュ(頂点情報)
-
-	// 右腕_0
-	D3DXLoadMeshFromX("data/MODEL/02_armR_0.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[2].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[2].nNumMat,								// マテリアル数
-		&g_player.aModel[2].pMesh);									// メッシュ(頂点情報)
-
-	// 右腕_1
-	D3DXLoadMeshFromX("data/MODEL/02_armR_1.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[3].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[3].nNumMat,								// マテリアル数
-		&g_player.aModel[3].pMesh);									// メッシュ(頂点情報)
-
-	// 右手
-	D3DXLoadMeshFromX("data/MODEL/03_handR.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[4].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[4].nNumMat,								// マテリアル数
-		&g_player.aModel[4].pMesh);									// メッシュ(頂点情報)
-
-	// 左腕_0
-	D3DXLoadMeshFromX("data/MODEL/04_armL_0.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[5].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[5].nNumMat,								// マテリアル数
-		&g_player.aModel[5].pMesh);									// メッシュ(頂点情報)
-
-	// 左腕_1
-	D3DXLoadMeshFromX("data/MODEL/04_armL_1.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[6].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[6].nNumMat,								// マテリアル数
-		&g_player.aModel[6].pMesh);									// メッシュ(頂点情報)
-
-	// 左手
-	D3DXLoadMeshFromX("data/MODEL/05_handL.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[7].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[7].nNumMat,								// マテリアル数
-		&g_player.aModel[7].pMesh);									// メッシュ(頂点情報)
-
-	// 右腿_0
-	D3DXLoadMeshFromX("data/MODEL/06_legR_0.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[8].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[8].nNumMat,								// マテリアル数
-		&g_player.aModel[8].pMesh);									// メッシュ(頂点情報)
-
-	// 右腿_1
-	D3DXLoadMeshFromX("data/MODEL/06_legR_1.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[9].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[9].nNumMat,								// マテリアル数
-		&g_player.aModel[9].pMesh);									// メッシュ(頂点情報)
-
-	// 右足
-	D3DXLoadMeshFromX("data/MODEL/07_footR.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[10].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[10].nNumMat,								// マテリアル数
-		&g_player.aModel[10].pMesh);								// メッシュ(頂点情報)
-
-	// 左腿_0
-	D3DXLoadMeshFromX("data/MODEL/08_legL_0.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[11].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[11].nNumMat,								// マテリアル数
-		&g_player.aModel[11].pMesh);								// メッシュ(頂点情報)
-
-	// 左腿_1
-	D3DXLoadMeshFromX("data/MODEL/08_legL_1.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[12].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[12].nNumMat,								// マテリアル数
-		&g_player.aModel[12].pMesh);								// メッシュ(頂点情報)
-
-	// 左足
-	D3DXLoadMeshFromX("data/MODEL/09_footL.x",						// 読み込むXファイル名
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&g_player.aModel[13].pBuffMat,								// マテリアル(頂点情報)
-		NULL,
-		&g_player.aModel[13].nNumMat,								// マテリアル数
-		&g_player.aModel[13].pMesh);								// メッシュ(頂点情報)
+	// プレイヤー構造体の初期化
+	g_player.pos =D3DXVECTOR3 (0.0f,0.0f,0.0f);						// 今の位置
+	g_player.posOld =D3DXVECTOR3 (0.0f,0.0f,0.0f);					// 昔の位置
+	g_player.rot = D3DXVECTOR3 (0.0f,0.0f,0.0f);					// 向き
+	g_player.rotDest = D3DXVECTOR3(0.0f,0.0f,0.0f) ;				// 目的の向き
+	g_player.move =  D3DXVECTOR3(0.0f,0.0f,0.0f) ;					// 移動量
+	g_player.bJump = false;											// ジャンプ中かどうか
+	g_player.bGetKey = false;										// 鍵を持っているか
+	g_player.nIdx = SetShadow(D3DXVECTOR3(0.0f, 0.0f, 0.0f));		// 影
+	g_player.oldmotionType = MOTION_NONE;
 
 
-	// 各パーツの階層構造設定
-	// 体
-	g_player.aModel[0].nIdModelParent = -1;							// 親モデルのインデックスを設定
-	g_player.aModel[0].pos = D3DXVECTOR3(0.0f, 23.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[0].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+	// モデルの読み込み
+	// テキストファイル読み込み
+	FILE *pfile = fopen("data/TEXT/motion.txt", "r");
+	char string[255][255];
 
-	// 顔
-	g_player.aModel[1].nIdModelParent = 0;							// 親モデルのインデックスを設定
-	g_player.aModel[1].pos = D3DXVECTOR3(0.0f, 22.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[1].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+	// モデル数の読み込み(パーツ)
+	while (fgets(string[0], 255, pfile) != NULL)
+	{// NULLじゃなかったら
+		fscanf(pfile, "%s", string[0]);
 
-	// 右腕_0
-	g_player.aModel[2].nIdModelParent = 0;							// 親モデルのインデックスを設定
-	g_player.aModel[2].pos = D3DXVECTOR3(-3.0f, 20.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[2].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+		if (strcmp(string[0], "NUM_MODEL") == 0)
+		{//　strcmp文字列は一致したら
+			fscanf(pfile, "%s %d", &string[0], &g_player.nNumModel);
+			break;
+		}
+	}
 
-	// 右腕_1
-	g_player.aModel[3].nIdModelParent = 2;							// 親モデルのインデックスを設定
-	g_player.aModel[3].pos = D3DXVECTOR3(-9.0f, 0.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[3].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+	// Xファイル文の読み込み
+	for (int nCntNumModel = 0; nCntNumModel < g_player.nNumModel; nCntNumModel++)
+	{
+		while (fgets(string[0], 255, pfile) != NULL)
+		{
+			if (strstr(string[0], "MODEL_FILENAME"))
+			{
+				sscanf(string[0], "%s %s %s %*s %*s\n", string[1], string[2], &g_player.aModel[nCntNumModel].sModelFailName);
+				break;
+			}
+		}
+		// Xファィルの読み込み
+		D3DXLoadMeshFromX(g_player.aModel[nCntNumModel].sModelFailName,			// 読み込むXファイル名
+			D3DXMESH_SYSTEMMEM,
+			pDevice,
+			NULL,
+			&g_player.aModel[nCntNumModel].pBuffMat,							// マテリアル(頂点情報)
+			NULL,
+			&g_player.aModel[nCntNumModel].nNumMat,								// マテリアル数
+			&g_player.aModel[nCntNumModel].pMesh);								// メッシュ(頂点情報)
+	}
+	for (int nCntNumModel = 0; nCntNumModel < g_player.nNumModel; nCntNumModel++)
+	{
+		// 階層構造
+		while (fgets(string[0], 255, pfile) != NULL)
+		{
+			if (strstr(string[0], "INDEX"))
+			{
+				sscanf(string[0], "%s %s %d", string[0], string[1], &g_player.aModel[nCntNumModel].nIdxModelNum);		// インデックス情報
+				fscanf(pfile, "%s%s%d%*s%*s", string[1], string[2], &g_player.aModel[nCntNumModel].nIdModelParent);
+				fscanf(pfile, "%s%s%f%f%f", string[3], string[4], &g_player.aModel[nCntNumModel].pos.x, &g_player.aModel[nCntNumModel].pos.y, &g_player.aModel[nCntNumModel].pos.z);
+				fscanf(pfile, "%s%s%f%f%f", string[5], string[6], &g_player.aModel[nCntNumModel].rot.x, &g_player.aModel[nCntNumModel].rot.y, &g_player.aModel[nCntNumModel].rot.z);
+				break;
+			}
+		}
 
-	// 右手
-	g_player.aModel[4].nIdModelParent = 3;							// 親モデルのインデックスを設定
-	g_player.aModel[4].pos = D3DXVECTOR3(-9.0f, 0.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[4].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+		// マテリアルデータを取得する
+		g_player.aModel[nCntNumModel].pMat = (D3DXMATERIAL*)g_player.aModel[nCntNumModel].pBuffMat->GetBufferPointer();
+		g_player.aModel[nCntNumModel].vtx = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 初期化
 
-	// 左腕_0
-	g_player.aModel[5].nIdModelParent = 0;							// 親モデルのインデックスを設定
-	g_player.aModel[5].pos = D3DXVECTOR3(3.0f, 20.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[5].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+																				// 頂点数を取得する
+		g_player.aModel[nCntNumModel].nNumVtx = g_player.aModel[nCntNumModel].pMesh->GetNumVertices();
 
-	// 左腕_1
-	g_player.aModel[6].nIdModelParent = 5;							// 親モデルのインデックスを設定
-	g_player.aModel[6].pos = D3DXVECTOR3(9.0f, 0.0f, 0.0f);			// 位置(オフセット)の初期設定
-	g_player.aModel[6].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+		// 頂点フォーマットのサイズを取得
+		g_player.aModel[nCntNumModel].pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&g_player.aModel[nCntNumModel].pVtxBuff);
 
-	// 左手
-	g_player.aModel[7].nIdModelParent = 6;							// 親モデルのインデックスを設定
-	g_player.aModel[7].pos = D3DXVECTOR3(9.0f, 0.0f, 0.0f);			// 位置(オフセット)の初期設定
-	g_player.aModel[7].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+		for (int nCntvtx = 0; nCntvtx < g_player.aModel[nCntNumModel].nNumVtx; nCntvtx++)
+		{
+			g_player.aModel[nCntNumModel].vtx = *(D3DXVECTOR3*)g_player.aModel[nCntNumModel].pVtxBuff;		// 頂点座標の代入
 
-	// 右腿_0
-	g_player.aModel[8].nIdModelParent = 0;							// 親モデルのインデックスを設定
-	g_player.aModel[8].pos = D3DXVECTOR3(-3.5f, 0.0f, 0.0f);			// 位置(オフセット)の初期設定
-	g_player.aModel[8].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+																											// xの最大値の比較
+			if (g_player.aModel[nCntNumModel].vtx.x >= g_player.aModel[nCntNumModel].vtxMax.x)
+			{
+				g_player.aModel[nCntNumModel].vtxMax.x = g_player.aModel[nCntNumModel].vtx.x;
+			}
 
-	// 右腿_1
-	g_player.aModel[9].nIdModelParent = 8;							// 親モデルのインデックスを設定
-	g_player.aModel[9].pos = D3DXVECTOR3(0.0f, -9.5f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[9].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向きの初期設定
+			// yの最大値の比較
+			if (g_player.aModel[nCntNumModel].vtx.y >= g_player.aModel[nCntNumModel].vtxMax.y)
+			{
+				g_player.aModel[nCntNumModel].vtxMax.y = g_player.aModel[nCntNumModel].vtx.y;
+			}
 
-	// 右足
-	g_player.aModel[10].nIdModelParent = 9;							// 親モデルのインデックスを設定
-	g_player.aModel[10].pos = D3DXVECTOR3(0.0f, -10.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[10].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向きの初期設定
+			// zの最大値の比較
+			if (g_player.aModel[nCntNumModel].vtx.z >= g_player.aModel[nCntNumModel].vtxMax.z)
+			{
+				g_player.aModel[nCntNumModel].vtxMax.z = g_player.aModel[nCntNumModel].vtx.z;
+			}
 
-	// 左腿_0
-	g_player.aModel[11].nIdModelParent = 0;							// 親モデルのインデックスを設定
-	g_player.aModel[11].pos = D3DXVECTOR3(3.5f, 0.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[11].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向きの初期設定
+			// xの最小値の比較
+			if (g_player.aModel[nCntNumModel].vtx.x <= g_player.aModel[nCntNumModel].vtxMax.x)
+			{
+				g_player.aModel[nCntNumModel].vtxMax.x = g_player.aModel[nCntNumModel].vtx.x;
+			}
 
-	// 左腿_1
-	g_player.aModel[12].nIdModelParent = 11;						// 親モデルのインデックスを設定
-	g_player.aModel[12].pos = D3DXVECTOR3(0.0f, -9.5f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[12].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向きの初期設定
+			// yの最小値の比較
+			if (g_player.aModel[nCntNumModel].vtx.y <= g_player.aModel[nCntNumModel].vtxMax.y)
+			{
+				g_player.aModel[nCntNumModel].vtxMax.y = g_player.aModel[nCntNumModel].vtx.y;
+			}
 
-	// 左足
-	g_player.aModel[13].nIdModelParent = 12;						// 親モデルのインデックスを設定
-	g_player.aModel[13].pos = D3DXVECTOR3(0.0f, -10.0f, 0.0f);		// 位置(オフセット)の初期設定
-	g_player.aModel[13].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向きの初期設定
+			// zの最小値の比較
+			if (g_player.aModel[nCntNumModel].vtx.z <= g_player.aModel[nCntNumModel].vtxMax.z)
+			{
+				g_player.aModel[nCntNumModel].vtxMax.z = g_player.aModel[nCntNumModel].vtx.z;
+			}
+			// 頂点フォーマットのサイズ分ポインタを進める
+			g_player.aModel[nCntNumModel].pVtxBuff += g_player.aModel[nCntNumModel].sizeFVF;
+		}
+		//頂点バッファをアンロック
+		g_player.aModel[nCntNumModel].pMesh->UnlockVertexBuffer();
+	}
 
-	//初期設定
-	g_player.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 位置
-	g_player.rot = D3DXVECTOR3(0.0f, -3.14f, 0.0f);					// 向き
+	//キー情報
+	for (int nCnt1 = 0; nCnt1 < MOTION_MAX; nCnt1++)
+	{// モーション読み込み
+	 // キー数の取得
+		while (fgets(string[0], 255, pfile) != NULL)
+		{
+			if (strstr(string[0], "MOTIONSET"))
+			{
+				fscanf(pfile, "%s%s%d%*s%*s%*s%*s", string[1], string[2], &g_player.aMotionInfo[nCnt1].nLoop);
+				fscanf(pfile, "%s%s%d", string[3], string[4], &g_player.aMotionInfo[nCnt1].nMaxKey);
+				break;
+			}
+		}
+		for (int nCnt2 = 0; nCnt2 < g_player.aMotionInfo[nCnt1].nMaxKey; nCnt2++)
+		{
+			while (fgets(string[0], 255, pfile) != NULL)
+			{
+				if (strstr(string[0], "KEYSET"))
+				{
+					fscanf(pfile, "%s%s%d", string[1], string[2], &g_player.aMotionInfo[nCnt1].aKeyInfo[nCnt2].nFrame);
+					break;
+				}
+			}
+			for (int nCnt = 0; nCnt < g_player.nNumModel; nCnt++)
+			{
+				while (fgets(string[0], 255, pfile) != NULL)
+				{
+					if (strstr(string[0], "KEY"))
+					{
+						fscanf(pfile, "%s%s%f%f%f", string[1], string[2], &g_player.aMotionInfo[nCnt1].aKeyInfo[nCnt2].aKey[nCnt].fPosKeyX,
+							&g_player.aMotionInfo[nCnt1].aKeyInfo[nCnt2].aKey[nCnt].fPosKeyY,
+							&g_player.aMotionInfo[nCnt1].aKeyInfo[nCnt2].aKey[nCnt].fPosKeyZ);
 
-	//変数宣言
-	int nNumVtx;													// 頂点数
-	DWORD sizeFVF;													// 頂点フォーマットのサイズ
-	BYTE *pVtxBuff;													// 頂点バッファへのポインタ
+						fscanf(pfile, "%s%s%f%f%f%*s", string[3], string[4], &g_player.aMotionInfo[nCnt1].aKeyInfo[nCnt2].aKey[nCnt].fRotKeyX,
+							&g_player.aMotionInfo[nCnt1].aKeyInfo[nCnt2].aKey[nCnt].fRotKeyY,
+							&g_player.aMotionInfo[nCnt1].aKeyInfo[nCnt2].aKey[nCnt].fRotKeyZ);
+						break;
+					}
+				}
+			}
 
+			while (fgets(string[0], 255, pfile) != NULL)
+			{
+				if (strstr(string[0], "END_KEYSET"))
+				{
+					break;
+				}
+			}
+		}
+		while (fgets(string[0], 255, pfile) != NULL)
+		{
+			if (strstr(string[0], "END_MOTIONSET"))
+			{
+				break;
+			}
+		}
+	}
+	// 原点にあるposとモデルごとにあるposをいい感じに合体させる
+	for (int nCntMotion = 0; nCntMotion < MOTION_MAX; nCntMotion++)
+	{
+		for (int nCntKey = 0; nCntKey < g_player.aMotionInfo[nCntMotion].nMaxKey; nCntKey++)
+		{
+			for (int nCnt = 0; nCnt < g_player.nNumModel; nCnt++)
+			{
+				g_player.aMotionInfo[nCntMotion].aKeyInfo[nCntKey].aKey[nCnt].fPosKeyX += g_player.aModel[nCnt].pos.x;
+				g_player.aMotionInfo[nCntMotion].aKeyInfo[nCntKey].aKey[nCnt].fPosKeyY += g_player.aModel[nCnt].pos.y;
+				g_player.aMotionInfo[nCntMotion].aKeyInfo[nCntKey].aKey[nCnt].fPosKeyZ += g_player.aModel[nCnt].pos.z;
 
-
+				g_player.aMotionInfo[nCntMotion].aKeyInfo[nCntKey].aKey[nCnt].fRotKeyX += g_player.aModel[nCnt].rot.x;
+				g_player.aMotionInfo[nCntMotion].aKeyInfo[nCntKey].aKey[nCnt].fRotKeyY += g_player.aModel[nCnt].rot.y;
+				g_player.aMotionInfo[nCntMotion].aKeyInfo[nCntKey].aKey[nCnt].fRotKeyZ += g_player.aModel[nCnt].rot.z;
+			}
+		}
+	}
+	fclose(pfile);
 	return S_OK;
 }
 
@@ -299,46 +272,98 @@ void UpdatePlayer(void)
 	Camera * pCamera;
 	pCamera = GetCamera();
 
-	// ブロック情報
-	Block *pBlock = GetBlock();
+	// ゴールの情報
+	Goal *pGoal = GetGoal();
 
-	// モデルの移動処理
-	// 上キーを押した
+
+
+
+	// プレイヤーの移動処理
 	if (GetkeyboardPress(DIK_W) == true)
-	{// バック
-		g_player.pos.x += sinf(pCamera->rot.y) * MAX_MOVE;		// +=はずっと押してる反応
-		g_player.pos.z += cosf(pCamera->rot.y) * MAX_MOVE;
+	{// Wキーを押した
 
-		g_player.rot.y = pCamera->rot.y - D3DX_PI;				// プレイヤーの向きを前にする
+		g_player.motionType = MOTION_WORK;
 
+		if (GetkeyboardPress(DIK_D) == true)
+		{// Dキーを押した
+			g_player.move.x += sinf(pCamera->rot.y + D3DX_PI * 3 / 4) * MAX_MOVE;
+			g_player.move.z -= cosf(pCamera->rot.y + D3DX_PI * 3 / 4) * MAX_MOVE;
+			g_player.rotDest.y = -D3DX_PI * 3 / 4 - pCamera->rot.y;
+
+		}
+		else if (GetkeyboardPress(DIK_A) == true)
+		{// Aキーを押した
+			g_player.move.x += sinf(pCamera->rot.y - D3DX_PI * 3 / 4) * MAX_MOVE;
+			g_player.move.z -= cosf(pCamera->rot.y - D3DX_PI * 3 / 4) * MAX_MOVE;
+			g_player.rotDest.y = D3DX_PI * 3 / 4 - pCamera->rot.y;
+
+		}
+		else
+		{
+			g_player.move.x += sinf(pCamera->rot.y + D3DX_PI) * MAX_MOVE;
+			g_player.move.z -= cosf(pCamera->rot.y - D3DX_PI) * MAX_MOVE;
+			g_player.rotDest.y = D3DX_PI - pCamera->rot.y;
+		}
+	}
+	else if (GetkeyboardPress(DIK_S) == true)
+	{
+		g_player.motionType = MOTION_WORK;
+
+		if (GetkeyboardPress(DIK_A) == true)
+		{
+			g_player.move.x += sinf(pCamera->rot.y - D3DX_PI * 1 / 4) * MAX_MOVE;
+			g_player.move.z -= cosf(pCamera->rot.y - D3DX_PI * 1 / 4) * MAX_MOVE;
+			g_player.rotDest.y = D3DX_PI * 1 / 4 - pCamera->rot.y;
+
+		}
+		else if (GetkeyboardPress(DIK_D) == true)
+		{
+			g_player.move.x += sinf(pCamera->rot.y + D3DX_PI * 1 / 4) * MAX_MOVE;
+			g_player.move.z -= cosf(pCamera->rot.y + D3DX_PI * 1 / 4) * MAX_MOVE;
+			g_player.rotDest.y = -D3DX_PI * 1 / 4 - pCamera->rot.y;
+		}
+		else
+		{
+			g_player.move.x -= sinf(pCamera->rot.y + D3DX_PI) * MAX_MOVE;
+			g_player.move.z += cosf(pCamera->rot.y - D3DX_PI) * MAX_MOVE;
+			g_player.rotDest.y = 0.0f - pCamera->rot.y;
+		}
+	}
+	else if (GetkeyboardPress(DIK_A) == true)		// 右移動・左移動
+	{// Aキーを押した
+		g_player.move.x += sinf(pCamera->rot.y - D3DX_PI * 2 / 4) * MAX_MOVE;
+		g_player.move.z -= cosf(pCamera->rot.y - D3DX_PI * 2 / 4) * MAX_MOVE;
+		g_player.rotDest.y = D3DX_PI * 2 / 4 - pCamera->rot.y;
+
+		g_player.motionType = MOTION_WORK;
+	}
+	else if (GetkeyboardPress(DIK_D) == true)
+	{// Dキーを押した
+		g_player.move.x += sinf(pCamera->rot.y + D3DX_PI * 2 / 4) * MAX_MOVE;
+		g_player.move.z -= cosf(pCamera->rot.y + D3DX_PI * 2 / 4) * MAX_MOVE;
+		g_player.rotDest.y = -D3DX_PI * 2 / 4 - pCamera->rot.y;
+
+		g_player.motionType = MOTION_WORK;
+	}
+	else if (GetkeyboardPress(DIK_W) == false)
+	{// キー入力されてなかったら
+		g_player.motionType = MOTION_NONE;
+	}
+	else if (GetkeyboardPress(DIK_A) == false)
+	{
+		g_player.motionType = MOTION_NONE;
+	}
+	else if (GetkeyboardPress(DIK_S) == false)
+	{
+		g_player.motionType = MOTION_NONE;
+	}
+	else if (GetkeyboardPress(DIK_D) == false)
+	{
+		g_player.motionType = MOTION_NONE;
 	}
 
-	// 下キーを押した
-	if (GetkeyboardPress(DIK_S) == true)
-	{// 前進
-		g_player.pos.x -= sinf(pCamera->rot.y) * MAX_MOVE;
-		g_player.pos.z -= cosf(pCamera->rot.y) * MAX_MOVE;
-
-		g_player.rot.y = pCamera->rot.y;						// プレイヤーの向きを後ろにする
-	}
-
-	// 左キーを押した
-	if (GetkeyboardPress(DIK_A) == true)
-	{// 左移動
-		g_player.pos.x -= cosf(pCamera->rot.y) * MAX_MOVE;
-		g_player.pos.z += sinf(pCamera->rot.y) * MAX_MOVE;
-
-		g_player.rot.y = +D3DX_PI / 2 + pCamera->rot.y;			// プレイヤーの向きを左向きにする
-	}
-
-	// 右キーを押した
-	if (GetkeyboardPress(DIK_D) == true)
-	{// 右移動
-		g_player.pos.x += cosf(pCamera->rot.y) * MAX_MOVE;
-		g_player.pos.z -= sinf(pCamera->rot.y) * MAX_MOVE;
-
-		g_player.rot.y = -D3DX_PI / 2 + pCamera->rot.y;			// プレイヤーの向きを右向きに
-	}
+	// モーション
+	MotionPlayer(g_player.motionType);
 
 	// 左シフトを押した
 	if (GetkeyboardPress(DIK_LSHIFT) == true)
@@ -352,47 +377,61 @@ void UpdatePlayer(void)
 		g_player.rot.y += MAX_ROT;
 	}
 
-	// moveにposを加算
+
+	// 重力
+//	g_player.pos.y--;
+
+	//// プレイヤーの位置が0以下の時
+	//if (g_player.pos.y <= 0)
+	//{
+	//	if (GetkeyboardTrgger(DIK_SPACE) == true && g_player.bJump == false)
+	//	{//ジャンプの処理(2段ジャンプの制御)
+	//		g_player.move.y = MAX_JUMP;
+	//		g_player.bJump = true;
+
+	//		g_player.motionType = MOTION_JUMP;
+	//	}
+	//}
+
+
+
+
+	// 位置の更新
 	g_player.pos.x += g_player.move.x;
 	g_player.pos.y += g_player.move.y;
+	g_player.pos.z += g_player.move.z;
 
-	// 移動量の制限
-	g_player.move.x += (0.0f - g_player.move.x)*0.25f;
-	g_player.move.y += (0.0f - g_player.move.y)*0.25f;
-
-	// エンターキーを押した
-	if (GetkeyboardPress(DIK_RETURN) == true)
-	{// 位置を戻す
-		g_player.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_player.rot = D3DXVECTOR3(0.0f, -3.14f, 0.0f);
-	}
-
-	// モーション
-	// ニュートラルモーション
-
-	for (int nCuntPlayer = 0; nCuntPlayer < 2; nCuntPlayer++)
+	// 目的回転制限
+	if ((g_player.rotDest.y - g_player.rot.y) > D3DX_PI)
 	{
-		// 右腕
-
-
-
+		g_player.rotDest.y -= D3DX_PI * 2.0f;
+	}
+	if ((g_player.rotDest.y - g_player.rot.y) < (-D3DX_PI))
+	{
+		g_player.rotDest.y += D3DX_PI * 2.0f;
 	}
 
+	// 向いてる方向
+	g_player.rot.y += (g_player.rotDest.y - g_player.rot.y) * 0.1f;
+
+	// 回転制限
+	if (g_player.rot.y < (-D3DX_PI))
+	{
+		g_player.rot.y += D3DX_PI * 2.0f;
+	}
+	if (g_player.rot.y > D3DX_PI)
+	{
+		g_player.rot.y -= D3DX_PI * 2.0f;
+	}
+
+	// 移動・回転量の減衰　割合で移動量を０まで減らす
+	g_player.move.x += (0 - g_player.move.x) * 0.08f;		
+	g_player.move.y += (0 - g_player.move.y) * 0.05f;
+	g_player.move.z += (0 - g_player.move.z) * 0.08f;
 
 
-
-	//重力
-//	g_player.move.y += +2;
-//
-//	if (GetkeyboardTrgger(DIK_SPACE) == true && g_player.bJump == false)
-//	{//ジャンプの処理(2段ジャンプの制御)
-//		g_player.move.y = MAX_JUMP;
-//		g_player.bJump = true;
-//	}
-
-
-
-
+	// 影をセットする
+	SetPositionShadow(g_player.nIdx, D3DXVECTOR3(g_player.pos.x, 0.0f, g_player.pos.z));
 
 
 }
@@ -486,4 +525,175 @@ void DrawPlayer(void)
 Player *GetPlayer(void)
 {
 	return &g_player;			// プレイヤーの情報の先頭アドレスを返す
+}
+
+//--------------------------------------------------------------------------------
+//	モーションの処理
+//--------------------------------------------------------------------------------
+void MotionPlayer(MOTION_STATE motionType)
+{
+	float fPosDiffX[MAX_PLAYER];		// 位置情報の差分
+	float fPosDiffY[MAX_PLAYER];		// 位置情報の差分
+	float fPosDiffZ[MAX_PLAYER];		// 位置情報の差分
+	float fRotDiffX[MAX_PLAYER];		// 位置情報の差分
+	float fRotDiffY[MAX_PLAYER];		// 位置情報の差分
+	float fRotDiffZ[MAX_PLAYER];		// 位置情報の差分
+	float fPosXAsk[MAX_PLAYER];			// 求める値位置X
+	float fPosYAsk[MAX_PLAYER];			// 求める値位置Y
+	float fPosZAsk[MAX_PLAYER];			// 求める値位置Z
+	float fRotXAsk[MAX_PLAYER];			// 求める値位置X
+	float fRotYAsk[MAX_PLAYER];			// 求める値位置Y
+	float fRotZAsk[MAX_PLAYER];			// 求める値位置Z
+
+	// 前回のモーションと現在のモーション比較
+	if (g_player.oldmotionType != motionType)
+	{
+		g_player.nNumKey = 0;
+	}
+
+	// 現在のモーションを保存
+	g_player.oldmotionType = motionType;
+
+	// 最大キーに行くまでの処理
+	if (g_player.nNumKey < g_player.aMotionInfo[motionType].nMaxKey - 1)
+	{
+		for (int nCntKey = 0; g_player.nNumKey < g_player.aMotionInfo[motionType].nMaxKey - 1; nCntKey++)
+		{
+			for (int nCnt = 0; nCnt < g_player.nNumModel; nCnt++)
+			{
+				// 差分を求める
+				fPosDiffX[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey + 1].aKey[nCnt].fPosKeyX - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyX;
+				fPosDiffY[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey + 1].aKey[nCnt].fPosKeyY - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyY;
+				fPosDiffZ[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey + 1].aKey[nCnt].fPosKeyZ - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyZ;
+
+				fRotDiffX[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey + 1].aKey[nCnt].fRotKeyX - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyX;
+				fRotDiffY[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey + 1].aKey[nCnt].fRotKeyY - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyY;
+				fRotDiffZ[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey + 1].aKey[nCnt].fRotKeyZ - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyZ;
+
+				// 求める値(位置＋差分*モーション数/フレーム数)
+				fPosXAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyX + fPosDiffX[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fPosYAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyY + fPosDiffY[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fPosZAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyZ + fPosDiffZ[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+
+				fRotXAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyX + fRotDiffX[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fRotYAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyY + fRotDiffY[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fRotZAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyZ + fRotDiffZ[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+
+				// モデルの位置に代入
+				g_player.aModel[nCnt].pos.x = fPosXAsk[nCnt];
+				g_player.aModel[nCnt].pos.z = fPosZAsk[nCnt];
+				g_player.aModel[nCnt].pos.y = fPosYAsk[nCnt];
+
+				g_player.aModel[nCnt].rot.x = fRotXAsk[nCnt];
+				g_player.aModel[nCnt].rot.y = fRotYAsk[nCnt];
+				g_player.aModel[nCnt].rot.z = fRotZAsk[nCnt];
+
+
+			}
+			// モーションカウンターを毎フレーム数ごとに増やす
+			g_player.nNumMotion += 1;
+
+			if (g_player.nNumMotion >= g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame)
+			{// モーションカウンターがフレーム数を超えたら
+				if (g_player.nNumKey < g_player.aMotionInfo[motionType].nMaxKey - 1)
+				{// ループする
+					g_player.nNumKey++;		// 次のキーに行く
+				}
+				g_player.nNumMotion = 0;		// モーションカウンターを初期化
+			}
+			else if (g_player.nNumMotion < g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame)
+			{// ループしない
+				break;
+			}
+		}
+	}
+	// 最大キーの時の処理
+	if (g_player.nNumKey == g_player.aMotionInfo[motionType].nMaxKey - 1)
+	{
+		if (g_player.aMotionInfo[motionType].nLoop == 1)
+		{// モーションループ
+			for (int nCnt = 0; nCnt < g_player.nNumModel; nCnt++)
+			{
+				// 差分を求める
+				fPosDiffX[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[0].aKey[nCnt].fPosKeyX - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyX;
+				fPosDiffY[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[0].aKey[nCnt].fPosKeyY - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyY;
+				fPosDiffZ[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[0].aKey[nCnt].fPosKeyZ - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyZ;
+																		
+				fRotDiffX[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[0].aKey[nCnt].fRotKeyX - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyX;
+				fRotDiffY[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[0].aKey[nCnt].fRotKeyY - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyY;
+				fRotDiffZ[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[0].aKey[nCnt].fRotKeyZ - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyZ;
+
+				// 求める値(位置＋差分*モーション数/フレーム数)
+				fPosXAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyX + fPosDiffX[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fPosYAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyY + fPosDiffY[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fPosZAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyZ + fPosDiffZ[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+
+				fRotXAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyX + fRotDiffX[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fRotYAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyY + fRotDiffY[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+				fRotZAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyZ + fRotDiffZ[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].nFrame);
+
+				// モデルの位置に代入
+				g_player.aModel[nCnt].pos.x = fPosXAsk[nCnt];
+				g_player.aModel[nCnt].pos.z = fPosZAsk[nCnt];
+				g_player.aModel[nCnt].pos.y = fPosYAsk[nCnt];
+
+				g_player.aModel[nCnt].rot.x = fRotXAsk[nCnt];
+				g_player.aModel[nCnt].rot.y = fRotYAsk[nCnt];
+				g_player.aModel[nCnt].rot.z = fRotZAsk[nCnt];
+			}
+			// モーションカウンターを毎フレーム数ごとに増やす
+			g_player.nNumMotion += 1;
+
+			if (g_player.nNumMotion >= g_player.aMotionInfo[motionType].aKeyInfo[0].nFrame)
+			{// モーションカウンターがフレーム数を超えたら
+				g_player.nNumKey = 0;		// キーを固定	
+				g_player.nNumMotion = 0;	// モーションカウンター最初に戻す
+			}
+		}
+		else
+		{// モデルをループさせない
+			for (int nCnt = 0; nCnt < g_player.nNumModel; nCnt++)
+			{
+				// 差分を求める
+				fPosDiffX[nCnt] = g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].aKey[nCnt].fPosKeyX - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyX;
+				fPosDiffY[nCnt] = g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].aKey[nCnt].fPosKeyY - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyY;
+				fPosDiffZ[nCnt] = g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].aKey[nCnt].fPosKeyZ - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyZ;
+
+				fRotDiffX[nCnt] = g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].aKey[nCnt].fRotKeyX - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyX;
+				fRotDiffY[nCnt] = g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].aKey[nCnt].fRotKeyY - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyY;
+				fRotDiffZ[nCnt] = g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].aKey[nCnt].fRotKeyZ - g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyZ;
+
+				// 求める値(位置＋差分*モーション数/フレーム数)
+				fPosXAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyX + fPosDiffX[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].nFrame);
+				fPosYAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyY + fPosDiffY[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].nFrame);
+				fPosZAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fPosKeyZ + fPosDiffZ[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].nFrame);
+
+				fRotXAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyX + fRotDiffX[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].nFrame);
+				fRotYAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyY + fRotDiffY[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].nFrame);
+				fRotZAsk[nCnt] = g_player.aMotionInfo[motionType].aKeyInfo[g_player.nNumKey].aKey[nCnt].fRotKeyZ + fRotDiffZ[nCnt] * ((float)g_player.nNumMotion / (float)g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].nFrame);
+
+				// モデルの位置に代入
+				g_player.aModel[nCnt].pos.x = fPosXAsk[nCnt];
+				g_player.aModel[nCnt].pos.z = fPosZAsk[nCnt];
+				g_player.aModel[nCnt].pos.y = fPosYAsk[nCnt];
+
+				g_player.aModel[nCnt].rot.x = fRotXAsk[nCnt];
+				g_player.aModel[nCnt].rot.y = fRotYAsk[nCnt];
+				g_player.aModel[nCnt].rot.z = fRotZAsk[nCnt];
+			}
+			// モーションカウンターを毎フレーム数ごとに増やす
+			g_player.nNumMotion += 1;
+
+			// モーションカウンターがフレーム数を超えたら
+			if (g_player.nNumMotion >= g_player.aMotionInfo[MOTION_NONE].aKeyInfo[0].nFrame)
+			{
+
+				g_player.nNumMotion = 0;	// モーションカウンター最初に戻す
+
+				g_player.motionType = MOTION_NONE;
+			}
+		}
+
+	}
+
 }

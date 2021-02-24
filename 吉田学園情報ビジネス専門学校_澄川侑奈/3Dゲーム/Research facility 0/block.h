@@ -15,35 +15,23 @@
 #define MAX_BLOCK		(1)		// 読み込むパーツ数
 
 //--------------------------------------------------------------------------------
-// モデルの構造体
-//--------------------------------------------------------------------------------
-typedef struct
-{
-	LPD3DXMESH pMesh;				// メッシュ(頂点情報)へのポインタ
-	LPD3DXBUFFER pBuffMat;			// マテリアルへのポインタ
-	DWORD nNumMat;					// マテリアルの数
-	D3DXVECTOR3 pos;				// 位置(オフセット)
-	D3DXVECTOR3 rot;				// 向き
-	D3DXMATRIX mtxWorld;			// ワールドマトリックス
-	int nldModelParent;				// 親のモデルのインデックス
-}ModelBlock;
-
-//--------------------------------------------------------------------------------
 // ブロックの構造体
 //--------------------------------------------------------------------------------
 typedef struct
 {
 	D3DXVECTOR3 pos;				// 位置
+	D3DXVECTOR3 blockVec;			// ブロックとプレイヤーのベクトル
 	D3DXVECTOR3 rot;				// 向き
 	D3DXVECTOR3 move;				// 移動量
 	D3DXMATRIX mtxWorld;			// ワールドマトリックス
-	bool bUse;						// 使用しているかどうか
 
 	float fWidth;					// 幅
 	float fHeight;					// 高さ
+	float fLength;					// 長さ
+	float fRadius;					// 半径
+
+	bool bUse;						// 使用しているかどうか
 									
-	ModelBlock aModel[MAX_BLOCK];	// モデル(パーツ)
-	int nNumModel;					// モデル(パーツ)数
 }Block;
 
 //--------------------------------------------------------------------------------

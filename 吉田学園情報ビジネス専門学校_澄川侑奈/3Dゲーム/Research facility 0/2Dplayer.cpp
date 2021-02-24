@@ -1,14 +1,17 @@
 //--------------------------------------------------------------------------------
 //
-//	2Dプレイヤーの処理 [2D2DPlayer.cpp]
+//	プレイヤーの処理 [2DPlayer.cpp]
 //	Author:Yuna Sumikawa
 //
 //--------------------------------------------------------------------------------
-#include "2DPlayer.h"			// 2Dプレイヤー
-#include "keyboard.h"			// キー入力
-#include "fade.h"				// フェード
-#include "sound.h"				// サウンド
-#include "Xcontroller.h"		// Xinput
+#include "2Dplayer.h"
+#include "keyboard.h"
+
+
+#include "fade.h"
+#include "Result.h"
+#include "sound.h"
+#include "Xcontroller.h"
 
 //--------------------------------------------------------------------------------
 //	マクロ定義
@@ -19,8 +22,8 @@
 #define TEXTURE_PLAYER_Y		(2)			//分割(ｙ)
 #define MAX_ANIMATION_COUNTER	(5)			//プレイヤー(スピード)
 #define MAX_JUMP				(-20)		//ジャンプ
-#define MAX_PLAYER_X			(41)		//プレイヤーの幅(当たり判定)
-#define MAX_PLAYER_Y			(117)		//プレイヤーの高さ(当たり判定)
+#define MAX_PLAYER_X			(161/6)		//プレイヤーの幅(当たり判定)
+#define MAX_PLAYER_Y			(304/5)		//プレイヤーの高さ(当たり判定)
 #define PLAYER_VR				(0.5f)		//f2DPlayerVに代入する数値(右)
 #define PLAYER_VL				(0.0f)		//f2DPlayerVに代入する数値(左)
 
@@ -68,13 +71,13 @@ HRESULT Init2DPlayer(void)
 	g_2DPlayer.bGetKey = false;								//鍵を持っているか
 	g_2DPlayer.bFall = false;									//落下
 
-															//自機がスタートする位置
-	g_2DPlayer.pos = D3DXVECTOR3(50.0f, 650.0f, 0.0f);
+	//自機がスタートする位置
+	g_2DPlayer.pos = D3DXVECTOR3(50.0f, 500.0f, 0.0f);
 
 	//テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/player.png", &g_pTexture2DPlayer);		//プレイヤー
+	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/player_2.png", &g_pTexture2DPlayer);		//プレイヤー
 
-																							//頂点バッファの生成5
+	//頂点バッファの生成5
 	if (FAILED(pDevice->CreateVertexBuffer
 	(sizeof(VERTEX_2D) * 4 * MAX_POLYGON,		//確保するバッファサイズ
 		D3DUSAGE_WRITEONLY,
@@ -94,7 +97,7 @@ HRESULT Init2DPlayer(void)
 	pVtx[1].pos = D3DXVECTOR3(g_2DPlayer.pos.x - MAX_PLAYER_SIZE_X, g_2DPlayer.pos.y - MAX_PLAYER_SIZE_Y, 0.0f);
 	pVtx[2].pos = D3DXVECTOR3(g_2DPlayer.pos.x + MAX_PLAYER_SIZE_X, g_2DPlayer.pos.y, 0.0f);
 	pVtx[3].pos = D3DXVECTOR3(g_2DPlayer.pos.x + MAX_PLAYER_SIZE_X, g_2DPlayer.pos.y - MAX_PLAYER_SIZE_Y, 0.0f);
-
+	
 	//rhwの設定
 	pVtx[0].rhw = 1.0f;
 	pVtx[1].rhw = 1.0f;
@@ -108,10 +111,10 @@ HRESULT Init2DPlayer(void)
 	pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 
 	//頂点情報の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0, 0.1);
+	pVtx[0].tex = D3DXVECTOR2(0.0, 0.5);
 	pVtx[1].tex = D3DXVECTOR2(0.0, 0.0);
-	pVtx[2].tex = D3DXVECTOR2(0.1, 0.1);
-	pVtx[3].tex = D3DXVECTOR2(0.1, 0.0);
+	pVtx[2].tex = D3DXVECTOR2(0.25, 0.5);
+	pVtx[3].tex = D3DXVECTOR2(0.25, 0.0);
 
 
 	//頂点バッファをアンロックする
@@ -149,6 +152,7 @@ void Update2DPlayer(void)
 	VERTEX_2D *pVtx;
 
 
+	Move2DPlayer();
 
 	//posOldにposを代入する
 	g_2DPlayer.posOld = g_2DPlayer.pos;
@@ -158,7 +162,7 @@ void Update2DPlayer(void)
 		g_2DPlayer.move.y = MAX_JUMP;
 		g_2DPlayer.bJump = true;
 		//ジャンプしたとき足を開いてるようにする
-		//	g_nCountersAnimationCnt2DPlayer = 1;
+	//	g_nCountersAnimationCnt2DPlayer = 1;
 
 		//SEの追加
 		PlaySound(SOUND_LABEL_SE_JUMP);	//ジャンプ
@@ -177,29 +181,39 @@ void Update2DPlayer(void)
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 
+	//プレイヤーアニメーション
+//	g_nCountersAnimation2DPlayer = g_nCountersAnimationCnt2DPlayer % MAX_ANIMATION_PATTERN;	//マクロはアニメーションのコマ数
+
 	//プレイヤーの移動処理
 	if (GetkeyboardPress(DIK_A) == true)
 	{//左の移動
-	 //移動量
+		//移動量
 		g_2DPlayer.move.x += -1.5;
 		//減衰
-		//	g_nCountersAnimationCun++;
+	//	g_nCountersAnimationCun++;
 		//f2DPlayerVに数値を代入する
 		g_2DPlayer.f2DPlayerV = PLAYER_VR;
 		//ジャンプ
 		g_2DPlayer.bMove = true;
 	}
-
+	
 	if (GetkeyboardPress(DIK_D) == true)
 	{//右に移動
-	 //移動量
+		//移動量
 		g_2DPlayer.move.x += +1.5;
 		//減衰
-		//	g_nCountersAnimationCun++;
+	//	g_nCountersAnimationCun++;
 		//f2DPlayerVに数値を代入する
 		g_2DPlayer.f2DPlayerV = PLAYER_VL;
 		//ジャンプする
 		g_2DPlayer.bMove = true;
+	}
+	
+	//AとDが押されてないとき
+	if (GetkeyboardPress(DIK_A) == false && GetkeyboardPress(DIK_D) == false)
+	{//足を開かないようにする
+		g_2DPlayer.bMove = false;
+		g_nCountersAnimationCnt2DPlayer = 0;
 	}
 
 	//プレイヤー当たり判定
@@ -222,6 +236,82 @@ void Update2DPlayer(void)
 	{//下
 		g_2DPlayer.pos.y = SCREEN_HEIGHT - 0;
 	}
+
+
+#if 0
+	for (int nCunPlyer = 0; nCunPlyer < 255; nCunPlyer++, pBlock++)
+	{//ブロックを増やす
+		if (pBlock->bUse == true)
+		{//ブロックがある
+			if (g_2DPlayer.pos.x - (MAX_PLAYER_X) < pBlock->pos.x + pBlock->fWidth &&		//ブロックの右端
+				g_2DPlayer.pos.x + (MAX_PLAYER_X) > pBlock->pos.x)						//ブロックの左端
+			{//自機のX軸がブロック左右に振れた時
+				if (g_2DPlayer.posOld.y <= pBlock->pos.y)
+				{//上から自機がブロックに当たる判定
+					if (g_2DPlayer.pos.y > pBlock->pos.y)
+					{//ブロックの上に乗った
+						g_2DPlayer.pos.y = pBlock->pos.y;
+						g_2DPlayer.move.y = 0.0f;		//重力の初期化
+						g_2DPlayer.bJump = false;
+					}
+				}
+				else if (g_2DPlayer.posOld.y - MAX_PLAYER_SIZE_Y >= pBlock->pos.y + pBlock->fHeight)
+				{//下の当たり判定
+					if (g_2DPlayer.pos.y - MAX_PLAYER_SIZE_Y < pBlock->pos.y + pBlock->fHeight)
+					{//ブロックに当たった
+						g_2DPlayer.pos.y = pBlock->pos.y + pBlock->fHeight + MAX_PLAYER_SIZE_Y;
+						g_2DPlayer.move.y = 1.0f;		//重力の初期化
+					}
+				}
+			}
+
+			if (g_2DPlayer.pos.y - (MAX_PLAYER_SIZE_Y) < pBlock->pos.y + pBlock->fHeight &&		//ブロックの下端プレイヤーの上端
+				g_2DPlayer.pos.y > pBlock->pos.y)													//ブロックの上端
+			{//自機のX軸がブロック左右に振れた時
+				if (g_2DPlayer.posOld.x + MAX_PLAYER_X <= pBlock->pos.x)
+				{//左の当たり判定
+					if (g_2DPlayer.pos.x + MAX_PLAYER_X > pBlock->pos.x)
+					{//ブロックに当たった
+						g_2DPlayer.pos.x = pBlock->pos.x - MAX_PLAYER_X;
+						g_2DPlayer.move.x = 0.0f;		//重力の初期化
+					}
+				}
+				else if (g_2DPlayer.posOld.x - MAX_PLAYER_X >= pBlock->pos.x + pBlock->fWidth)
+				{//右の当たり判定
+					if (g_2DPlayer.pos.x - MAX_PLAYER_X < pBlock->pos.x + pBlock->fWidth)
+					{//ブロックに当たった
+						g_2DPlayer.pos.x = pBlock->pos.x + pBlock->fWidth + MAX_PLAYER_X;
+						g_2DPlayer.move.x = 0.0f;		//重力の初期化
+					}
+				}
+			}
+		}
+	}
+
+#endif
+
+	//頂点座標
+	pVtx[0].pos = D3DXVECTOR3(g_2DPlayer.pos.x - MAX_PLAYER_SIZE_X, g_2DPlayer.pos.y, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(g_2DPlayer.pos.x - MAX_PLAYER_SIZE_X, g_2DPlayer.pos.y - MAX_PLAYER_SIZE_Y, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(g_2DPlayer.pos.x + MAX_PLAYER_SIZE_X, g_2DPlayer.pos.y, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(g_2DPlayer.pos.x + MAX_PLAYER_SIZE_X, g_2DPlayer.pos.y - MAX_PLAYER_SIZE_Y, 0.0f);
+
+
+	if ((g_nCountersAnimation2DPlayer + 1) % 5 == 0)
+	{// 四番目まで来たら初期に戻す
+		g_nCountersAnimation2DPlayer = 0;
+	}
+
+	// テクスチャの頂点座標の設定
+	pVtx[0].tex = D3DXVECTOR2(1.0f / MAX_ANIMATION_PATTERN * ((float)g_nCountersAnimation2DPlayer), 1.0f / TEXTURE_PLAYER_Y * (g_fTexY + 1));
+	pVtx[1].tex = D3DXVECTOR2(1.0f / MAX_ANIMATION_PATTERN * ((float)g_nCountersAnimation2DPlayer), 1.0f / TEXTURE_PLAYER_Y * (g_fTexY));
+	pVtx[2].tex = D3DXVECTOR2(1.0f / MAX_ANIMATION_PATTERN * ((float)g_nCountersAnimation2DPlayer + 1), 1.0f / TEXTURE_PLAYER_Y * (g_fTexY + 1));
+	pVtx[3].tex = D3DXVECTOR2(1.0f / MAX_ANIMATION_PATTERN * ((float)g_nCountersAnimation2DPlayer + 1), 1.0f / TEXTURE_PLAYER_Y * (g_fTexY));
+
+
+
+	//頂点バッファをアンロックする
+	g_pVtxBuffPolygon->Unlock();
 }
 
 //-------------------------------------------------------------------------------
@@ -249,6 +339,64 @@ void Draw2DPlayer(void)
 		2);					//描画するプリミティブ数
 }
 
+//--------------------------------------------------------------------------------
+// プレイヤーの移動
+//--------------------------------------------------------------------------------
+void Move2DPlayer(void)
+{
+	PLAYER *p2DPlayer;
+	p2DPlayer = Get2DPlayer();
+
+	if (GetkeyboardPress(DIK_D) == true)
+	{// 右
+		g_fTexY = 0;							// アニメテクスチャY
+		if (g_2DPlayer.bJump == false)
+		{// アニメーションカウンター開始
+			g_nCountersAnimationCnt2DPlayer += 1;								// アニメーションカウンター
+			if ((g_nCountersAnimationCnt2DPlayer % 5) == 0)
+			{// アニメーション速度
+				g_nCountersAnimation2DPlayer += 1;						// アニメテクスチャX
+			}
+		}
+	}
+	else if (GetkeyboardPress(DIK_A) == true)
+	{// 左
+		g_fTexY = 1;							// アニメテクスチャY
+
+		if (g_2DPlayer.bJump == false)
+		{// アニメーションカウンター開始
+			g_nCountersAnimationCnt2DPlayer += 1;								// アニメーションカウンター
+			if ((g_nCountersAnimationCnt2DPlayer % 5) == 0)
+			{// アニメーション速度
+				g_nCountersAnimation2DPlayer += 1;						// アニメテクスチャX
+			}
+		}
+	}
+	else if (GetkeyboardPress(DIK_A) == false)
+	{// 止まった時
+		g_nCountersAnimation2DPlayer = 0;									// アニメーションストップ
+	}
+	else if (GetkeyboardPress(DIK_D) == false)
+	{// 止まった時
+		g_nCountersAnimation2DPlayer = 0;									// アニメーションストップ
+	}
+	if (g_2DPlayer.bJump == false)
+	{// 空中にいないとき
+		if (GetkeyboardTrgger(DIK_J) == true)
+		{// ジャンプ開始
+			g_2DPlayer.move.y -= 20.0f;						// ジャンプ力
+			g_2DPlayer.bJump = true;							// ジャンプ中
+		}
+	}
+	if (g_2DPlayer.bJump == true)
+	{// 空中にいるとき
+		g_nCountersAnimation2DPlayer = 1;									// アニメーションストップ
+	}
+	if (g_2DPlayer.move.y != 0.0f)
+	{// ジャンプ不可
+		g_2DPlayer.bJump = true;								// 空中
+	}
+}
 //--------------------------------------------------------------------------------
 //	プレイヤーの取得
 //--------------------------------------------------------------------------------

@@ -143,7 +143,7 @@ void UpdateResult(void)
 	{//フェード中は動けない
 		if (GetkeyboardTrgger(DIK_RETURN) == true)
 		{	//ENTERキーを押したらランキング画面へ
-			SetFade(FADE_OUT, MODE_RANKING);
+			SetFade(FADE_OUT, MODE_TITLE);
 		}
 	}
 }

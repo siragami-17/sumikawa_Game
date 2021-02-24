@@ -6,12 +6,16 @@
 //--------------------------------------------------------------------------------
 #ifndef _MAIN_H_
 #define _MAIN_H_
+#define _CRT_SECURE_NO_WARNINGS
 
 // インクルードファイル	
 #include <windows.h>
 #include <XInput.h>		// Xinputに必要
 #include "d3dx9.h"
-#include "xaudio2.h"	// サウンド再生に必要5
+#include "xaudio2.h"	// サウンド再生に必要
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // キーボード入力処理
 #define DIRECTINPUT_VERSION (0x0800)

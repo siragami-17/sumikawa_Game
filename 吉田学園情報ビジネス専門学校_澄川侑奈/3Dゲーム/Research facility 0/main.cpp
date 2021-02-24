@@ -57,7 +57,7 @@ LPDIRECT3D9 g_pD3D = NULL;				// Direct3Dオブジェクトへのポインタ
 LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;	// Direct3Dデバイスへもポインタ
 LPD3DXFONT g_pFont = NULL;				// フォントへのポインタ
 int g_nCountFPS;						// FPSカウンタ
-MODE g_mode = MODE_GAME;				// モードの種類
+MODE g_mode = MODE_TITLE;				// モードの種類
 
 //-------------------------------------------------------------------------------
 //	メイン関数
@@ -114,7 +114,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpcmdLine
 		NULL);
 
 	// 初期化処理
-	if (FAILED(Init(hInstance, hWnd, TRUE)))// FALSEだとフルスクリーン。TRUEだと指定の大きさ
+	if (FAILED(Init(hInstance, hWnd, FALSE)))// FALSEだとフルスクリーン。TRUEだと指定の大きさ
 	{
 		return -1;
 	}
