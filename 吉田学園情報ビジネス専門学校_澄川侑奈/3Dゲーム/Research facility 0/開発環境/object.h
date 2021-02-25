@@ -12,7 +12,7 @@
 //--------------------------------------------------------------------------------
 //	マクロ定義
 //--------------------------------------------------------------------------------
-#define MAX_OBJECT		(1)		// 読み込むパーツ数
+#define MAX_OBJECT		(4)		// 読み込むパーツ数
 
 //--------------------------------------------------------------------------------
 // ブロックの構造体
@@ -43,6 +43,8 @@ void UninitObject(void);
 void UpdateObject(void);
 void DrawObject(void);
 
-Object *Getobject(void);		// オブジェクトの情報
+Object *Getobject(void);				// オブジェクトの情報
+
+void SetObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size);		// オブジェクトの設定
 
 #endif

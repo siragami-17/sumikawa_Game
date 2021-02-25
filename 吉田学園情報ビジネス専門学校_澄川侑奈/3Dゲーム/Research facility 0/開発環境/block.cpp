@@ -38,7 +38,7 @@ HRESULT InitBlock(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// block構造体の初期化
-	g_block.pos = D3DXVECTOR3(0.0f, 0.0f, 500.0f);											// 位置
+	g_block.pos = D3DXVECTOR3(0.0f, 0.0f, 480.0f);											// 位置
 	g_block.blockVec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);										// 位置
 	g_block.size = D3DXVECTOR3(MAX_SIZE_BLOCK_X, MAX_SIZE_BLOCK_Y, MAX_SIZE_BLOCK_Z);		// サイズ
 	g_block.fWidth = 0.0f;																	// 幅

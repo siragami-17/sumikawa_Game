@@ -13,6 +13,7 @@
 #include "block.h"					// ゴール
 #include "wall.h"					// 壁
 #include "sound.h"					// サウンド
+#include "object.h"					// オブジェクト
 
 //--------------------------------------------------------------------------------
 //	マクロ定義
@@ -50,15 +51,15 @@ HRESULT InitPlayer(void)
 	g_player.motionType = MOTION_NONE;
 
 	// プレイヤー構造体の初期化
-	g_player.pos =D3DXVECTOR3 (0.0f,0.0f,-400.0f);						// 今の位置
-	g_player.posOld =D3DXVECTOR3 (0.0f,0.0f,0.0f);					// 昔の位置
-	g_player.rot = D3DXVECTOR3 (0.0f, D3DXToRadian(180.0f),0.0f);					// 向き
+	g_player.pos =D3DXVECTOR3 (0.0f,0.0f,-400.0f);												// 今の位置
+	g_player.posOld =D3DXVECTOR3 (0.0f,0.0f,0.0f);												// 昔の位置
+	g_player.rot = D3DXVECTOR3 (0.0f,0.0f,0.0f);												// 向き
 	g_player.size = D3DXVECTOR3(MAX_SIZE_PLAYER_X, MAX_SIZE_PLAYER_Y, MAX_SIZE_PLAYER_Z);		// サイズ
-	g_player.rotDest = D3DXVECTOR3(0.0f,0.0f,0.0f) ;				// 目的の向き
-	g_player.move =  D3DXVECTOR3(0.0f,0.0f,0.0f) ;					// 移動量
-	g_player.bJump = false;											// ジャンプ中かどうか
-	g_player.bGetKey = false;										// 鍵を持っているか
-	g_player.nIdx = SetShadow(D3DXVECTOR3(0.0f, 0.0f, 0.0f));		// 影
+	g_player.rotDest = D3DXVECTOR3(0.0f,0.0f,0.0f) ;											// 目的の向き
+	g_player.move =  D3DXVECTOR3(0.0f,0.0f,0.0f) ;												// 移動量
+	g_player.bJump = false;																		// ジャンプ中かどうか
+	g_player.bGetKey = false;																	// 鍵を持っているか
+	g_player.nIdx = SetShadow(D3DXVECTOR3(0.0f, 0.0f, 0.0f));									// 影
 	g_player.oldmotionType = MOTION_NONE;
 
 
@@ -283,6 +284,9 @@ void UpdatePlayer(void)
 	// ゴールの情報
 	Block *pBlock = GetBlock();
 
+	// オブジェクト
+	Object  *pObject = Getobject();
+
 
 
 	// プレイヤーの移動処理
@@ -440,16 +444,17 @@ void UpdatePlayer(void)
 	// ブロックとプレイヤーの当たり判定
 	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pBlock->pos, pBlock->size);
 
+	// オブジェクトとプレイヤーの当たり判定
+	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[0].pos, pObject[0].size);
+	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[1].pos, pObject[1].size);
+	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[2].pos, pObject[2].size);
+	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[3].pos, pObject[3].size);
+
 	// 前回の位置を保存
 	g_player.posOld = g_player.pos;
 
 	// 影をセットする
 	SetPositionShadow(g_player.nIdx, D3DXVECTOR3(g_player.pos.x, 1.0f, g_player.pos.z));
-
-
-
-
-
 }
 
 //--------------------------------------------------------------------------------

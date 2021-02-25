@@ -1,3 +1,4 @@
-﻿  effect.cpp
+﻿  object.cpp
+c:\users\student\desktop\3d game\research facility 0\object.cpp(87): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
   3Dgame.vcxproj -> C:\Users\student\Desktop\3D game\Research facility 0\Debug\3Dgame.exe
   3Dgame.vcxproj -> C:\Users\student\Desktop\3D game\Research facility 0\Debug\3Dgame.pdb (Full PDB)
