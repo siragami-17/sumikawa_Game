@@ -23,7 +23,6 @@
 #include "Pause.h"			// ポーズ
 #include "block.h"			// ブロック
 #include "object.h"			// オブジェクト
-#include "object_1.h"
 
 //-------------------------------------------------------------------------------
 //	グローバル変数
@@ -62,9 +61,6 @@ HRESULT InitGame(void)
 
 	// オブジェクト
 	InitObject();
-
-	// オブジェクト
-//	InitObject_1();
 
 	// ゴールの初期化処理
 	InitBlock();
@@ -108,9 +104,6 @@ void UninitGame(void)
 
 	// ゴールの終了処理
 	UninitBlock();
-
-	// オブジェクト
-//	UninitObject_1();
 
 	// オブジェクト
 	UninitObject();
@@ -168,8 +161,6 @@ void UpdateGame(void)
 		// ハートの更新処理
 		UpdateHeart();
 
-
-
 		// 地面の更新処理
 		UpdateMeshfild();
 
@@ -181,9 +172,6 @@ void UpdateGame(void)
 
 		// オブジェクト
 		UpdateObject();
-
-		// オブジェクト
-	//	UpdateObject_1();
 
 		// ゴールの更新処理
 		UpdateBlock();
@@ -225,9 +213,6 @@ void DrawGame(void)
 	// オブジェクト
 	DrawObject();
 
-	// オブジェクト
-//	DrawObject_1();
-
 	// 鍵の描画処理
 	DrawKey();
 
@@ -239,7 +224,6 @@ void DrawGame(void)
 
 	// ハートの描画処理
 	DrawHeart();
-
 
 	// 影の描画処理
 	DrawShadow();

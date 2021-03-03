@@ -34,7 +34,6 @@ void InitCamera(void)
 
 	// カメラの情報初期化
 	g_camera.posV = D3DXVECTOR3(0.0f, 20.0f, -400.0f);
-	//g_camera.posV = D3DXVECTOR3(0.0f, 100.0f, -200.0f);
 	g_camera.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_camera.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	g_camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -102,7 +101,7 @@ void UpdateCamera(void)
 			g_camera.posR.z -= sinf(g_camera.rot.y) * MAX_V;
 			g_camera.posV.z -= sinf(g_camera.rot.y) * MAX_V;
 		}
-#endif
+
 
 	// カメラ(視点)の移動処理
 	// Yキーを押した
@@ -118,30 +117,8 @@ void UpdateCamera(void)
 
 	}
 
-	// Zキーを押した
-	if (GetkeyboardPress(DIK_Z) == true)
-	{// 左
-		g_camera.rot.y += 0.05f;		// 角度
-		if (g_camera.rot.y > D3DX_PI)
-		{
-			g_camera.rot.y -= D3DX_PI*2.0f;
-		}
-
-	}
-
-	// Cキーを押した
-	if (GetkeyboardPress(DIK_C) == true)
-	{// 右
-		g_camera.rot.y -= 0.05f;		// 角度
-		if (g_camera.rot.y < (-D3DX_PI))
-		{
-			g_camera.rot.y += D3DX_PI * 2.0f;
-		}
-
-	}
 
 	// カメラ(注視点)の移動処理
-
 	// Tキーを押した
 	if (GetkeyboardPress(DIK_T) == true)
 	{// 上
@@ -153,16 +130,33 @@ void UpdateCamera(void)
 	{// 下
 		g_camera.posR.y -= MAX_V;
 	}
+#endif
+
+	// Zキーを押した
+	if (GetkeyboardPress(DIK_LEFT) == true)
+	{// 左
+		g_camera.rot.y += 0.05f;		// 角度
+		if (g_camera.rot.y > D3DX_PI)
+		{
+			g_camera.rot.y -= D3DX_PI*2.0f;
+		}
+
+	}
+	// Cキーを押した
+	if (GetkeyboardPress(DIK_RIGHT) == true)
+	{// 右
+		g_camera.rot.y -= 0.05f;		// 角度
+		if (g_camera.rot.y < (-D3DX_PI))
+		{
+			g_camera.rot.y += D3DX_PI * 2.0f;
+}
+
+	}
 
 	// 視点の制御
-	g_camera.posVDest.x = pPlayer->pos.x - sinf(g_camera.rot.y + D3DX_PI) * 400.0f;
-	g_camera.posVDest.z = pPlayer->pos.z + cosf(g_camera.rot.y - D3DX_PI) * 400.0f;
-	g_camera.posVDest.y = pPlayer->pos.y + 250.0f;
-
-	// 注視点の制御
-	//g_camera.posRDest.x = pPlayer->pos.x + sinf(pPlayer->rot.y - D3DX_PI) * 250.0f;
-	//g_camera.posRDest.z = pPlayer->pos.z + cosf(pPlayer->rot.y - D3DX_PI) * 400.0f;
-	//g_camera.posRDest.y = pPlayer->pos.y;
+	g_camera.posVDest.x = pPlayer->pos.x - sinf(g_camera.rot.y + D3DX_PI) * 500.0f;
+	g_camera.posVDest.z = pPlayer->pos.z + cosf(g_camera.rot.y - D3DX_PI) * 250.0f;
+	g_camera.posVDest.y = pPlayer->pos.y + 100.0f;
 
 	// 注視点の制御
 	g_camera.posRDest.x = pPlayer->pos.x;
@@ -174,50 +168,9 @@ void UpdateCamera(void)
 	g_camera.posV.y += (g_camera.posVDest.y - g_camera.posV.y) * 0.08f;
 
 	// 注視点の更新
-	g_camera.posR.x += (g_camera.posRDest.x - g_camera.posR.x) * 0.08f;
-	g_camera.posR.z += (g_camera.posRDest.z - g_camera.posR.z) * 0.08f;
-	g_camera.posR.y += (g_camera.posRDest.y - g_camera.posR.y) * 0.08f;
-
-
-	// Qキーを押した
-//	if (GetkeyboardPress(DIK_Q) == true) 
-//	{// 左
-//		g_camera.rot.y -= 0.05f;		// 角度
-//		g_camera.posR.x = g_camera.posV.x - sinf(g_camera.rot.y) * MAX_LONG;
-//		g_camera.posR.z = g_camera.posV.z - cosf(g_camera.rot.y) * MAX_LONG;
-//
-//		// カメラの向きの処理
-//		if (g_camera.rot.y < -D3DX_PI)
-//		{	// -3.14
-//			g_camera.rot.y += D3DX_PI * 2.0f;
-//
-//		}
-//	}
-//
-//	// Eキーを押した
-//	if (GetkeyboardPress(DIK_E) == true)
-//	{// 右
-//		g_camera.rot.y += 0.05f;		// 角度
-//		g_camera.posR.x = g_camera.posV.x - sinf(g_camera.rot.y) * MAX_LONG;
-//		g_camera.posR.z = g_camera.posV.z - cosf(g_camera.rot.y) * MAX_LONG;
-//
-//		// カメラの向きの処理
-//		if (g_camera.rot.y > D3DX_PI)
-//		{	// +3.14
-//			g_camera.rot.y -= D3DX_PI * 2.0f;
-//
-//		}
-//	}
-//
-//	//カメラの位置リセット
-//	// スペースキーを押した
-//	if (GetkeyboardPress(DIK_M) == true)
-//	{
-//		g_camera.posV = D3DXVECTOR3(0.0f, 100.0f, -200.0f);
-//		g_camera.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-//		g_camera.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-//		g_camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-//	}
+	g_camera.posR.x += (g_camera.posRDest.x - g_camera.posR.x) * 0.04f;
+	g_camera.posR.z += (g_camera.posRDest.z - g_camera.posR.z) * 0.04f;
+	g_camera.posR.y += (g_camera.posRDest.y - g_camera.posR.y) * 0.04f;
 }
 
 //--------------------------------------------------------------------------------

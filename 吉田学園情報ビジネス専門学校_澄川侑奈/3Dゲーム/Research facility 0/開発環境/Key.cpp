@@ -12,11 +12,14 @@
 //--------------------------------------------------------------------------------
 // グローバル変数
 //--------------------------------------------------------------------------------
-#define MAX_KEY			(1)			// テクスチャの最大数
-#define MAX_KEY_COUNTER	(10)		// 鍵のスピード
-#define MAX_KEY_PATTERN	(5)			// 鍵の個数
-#define MAX_KEY_X		(50/2)		// 鍵X
-#define MAX_KEY_Y		(60/2)		// 鍵Y
+#define MAX_KEY			(1)				// テクスチャの最大数
+#define MAX_KEY_COUNTER	(10)			// 鍵のスピード
+#define MAX_KEY_PATTERN	(5)				// 鍵の個数
+#define MAX_KEY_X		(50/2)			// 鍵X
+#define MAX_KEY_Y		(60/2)			// 鍵Y
+#define KEY_POS_X		(-160.0f)		// 鍵の位置_X
+#define KEY_POS_Y		(30.0f)			// 鍵の位置_X
+#define KEY_POS_Z		(-440.0f)		// 鍵の位置_X
 
 //--------------------------------------------------------------------------------
 // グローバル変数
@@ -48,20 +51,20 @@ HRESULT InitKey(void)
 	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Key.png", &g_pTextureKey);
 
 	// 構造体の初期化
-	g_Key.pos = D3DXVECTOR3(470.0f, 30.0f, -470.0f);				// 位置
-	g_Key.keyVec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 位置
-	g_Key.fWidth = 0.0f;										// 幅
-	g_Key.fHeight = 0.0f;										// 高さ
-	g_Key.fLength = 0.0f;										// 長さ
-	g_Key.fRadius = (float)MAX_KEY_X;							// 半径
-	g_Key.nIdx = SetShadow(D3DXVECTOR3(0.0f, 0.0f, 0.0f));		// 影
-	g_Key.bUse = true;											// 使用しているかどうか
+	g_Key.pos = D3DXVECTOR3(KEY_POS_X, KEY_POS_Y, KEY_POS_Z);		// 位置
+	g_Key.keyVec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 位置
+	g_Key.fWidth = 0.0f;											// 幅
+	g_Key.fHeight = 0.0f;											// 高さ
+	g_Key.fLength = 0.0f;											// 長さ
+	g_Key.fRadius = (float)MAX_KEY_X;								// 半径
+	g_Key.nIdx = SetShadow(D3DXVECTOR3(0.0f, 0.0f, 0.0f));			// 影
+	g_Key.bUse = true;												// 使用しているかどうか
 
    // 頂点バッファの生成
 	if (FAILED(pDevice->CreateVertexBuffer
-	(sizeof(VERTEX_3D) * 4,										// 確保するバッファサイズ
+	(sizeof(VERTEX_3D) * 4,											// 確保するバッファサイズ
 		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,											// 頂点フォーマット
+		FVF_VERTEX_3D,												// 頂点フォーマット
 		D3DPOOL_MANAGED,
 		&g_pVtxBuffKey,
 		NULL)))

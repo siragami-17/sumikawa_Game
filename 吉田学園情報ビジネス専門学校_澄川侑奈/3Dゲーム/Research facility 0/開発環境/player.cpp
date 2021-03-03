@@ -14,7 +14,6 @@
 #include "wall.h"					// 壁
 #include "sound.h"					// サウンド
 #include "object.h"					// オブジェクト
-#include "object_1.h"
 
 //--------------------------------------------------------------------------------
 //	マクロ定義
@@ -287,11 +286,6 @@ void UpdatePlayer(void)
 	// オブジェクト
 	Object  *pObject = Getobject();
 
-	// オブジェクト
-	Object_1  *pObject_1 = Getobject_1();
-
-
-
 	// プレイヤーの移動処理
 	if (GetkeyboardPress(DIK_W) == true)
 	{// Wキーを押した
@@ -444,20 +438,13 @@ void UpdatePlayer(void)
 	g_player.move.z += (0 - g_player.move.z) * 0.08f;
 
 
-	// ブロックとプレイヤーの当たり判定
+	// ゴールとプレイヤーの当たり判定
 	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pBlock->pos, pBlock->size);
 
-	// 壁とプレイヤーの当たり判定
-	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[0].pos, pObject[0].size);
-	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[1].pos, pObject[1].size);
-	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[2].pos, pObject[2].size);
-	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[3].pos, pObject[3].size);
-
-	// オブジェクトとプレイヤーの当たり判定
-	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[4].pos, pObject[4].size);
-	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[5].pos, pObject[5].size);
-	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[6].pos, pObject[6].size);
-
+	for (int nObject = 0; nObject < MAX_OBJECT; nObject++)
+	{// 柵とプレイヤーの当たり判定
+		SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[nObject].pos, pObject[nObject].size);
+	}
 
 	// 前回の位置を保存
 	g_player.posOld = g_player.pos;
