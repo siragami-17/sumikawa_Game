@@ -117,9 +117,6 @@
     <ClCompile Include="Title_Player.cpp">
       <Filter>ソース ファイル\Title</Filter>
     </ClCompile>
-    <ClCompile Include="Goal.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="block.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -135,11 +132,11 @@
     <ClCompile Include="object.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="effect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="heart.cpp">
       <Filter>ソース ファイル\Heart</Filter>
+    </ClCompile>
+    <ClCompile Include="object_1.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +230,6 @@
     <ClInclude Include="Title_Player.h">
       <Filter>ヘッダー ファイル\Title</Filter>
     </ClInclude>
-    <ClInclude Include="Goal.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="block.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -251,7 +245,7 @@
     <ClInclude Include="object.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="effect.h">
+    <ClInclude Include="object_1.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

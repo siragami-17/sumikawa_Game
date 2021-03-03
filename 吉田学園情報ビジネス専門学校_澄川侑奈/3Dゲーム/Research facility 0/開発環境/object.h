@@ -12,28 +12,62 @@
 //--------------------------------------------------------------------------------
 //	マクロ定義
 //--------------------------------------------------------------------------------
-#define MAX_OBJECT		(4)		// 読み込むパーツ数
+#define MAX_OBJECT		(7)		// 読み込むパーツ数
 
 //--------------------------------------------------------------------------------
-// ブロックの構造体
+//	列挙型
+//--------------------------------------------------------------------------------
+typedef enum
+{// オブジェクトの種類
+	OBJECT_WOLL = 0,	// 壁
+	OBJECT_FENCE,		// 柵
+	OBJECT_MAX
+}OBJECT_TYPE;
+
+//--------------------------------------------------------------------------------
+// マテリアルの構造体
 //--------------------------------------------------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 pos;				// 位置
-	D3DXVECTOR3 blockVec;			// ブロックとプレイヤーのベクトル
-	D3DXVECTOR3 rot;				// 向き
-	D3DXVECTOR3 move;				// 移動量
-	D3DXVECTOR3 size;				// サイズ
-	D3DXMATRIX mtxWorld;			// ワールドマトリックス
+	LPD3DXMESH g_pMeshObject;			// メッシュ(頂点情報)へのポインタ
+	LPD3DXBUFFER g_pBuffMatbject;		// マテリアルへのポインタ
+	DWORD g_nNumMatObject;				// マテリアル数
 
-	float fWidth;					// 幅
-	float fHeight;					// 高さ
-	float fLength;					// 長さ
-	float fRadius;					// 半径
+}MODEL_DATA;
 
-	bool bUse;						// 使用しているかどうか
+//--------------------------------------------------------------------------------
+// オブジェクトの構造体
+//--------------------------------------------------------------------------------
+typedef struct
+{
+	D3DXVECTOR3 pos;							// 位置
+	D3DXVECTOR3 blockVec;						// ブロックとプレイヤーのベクトル
+	D3DXVECTOR3 rot;							// 向き
+	D3DXVECTOR3 move;							// 移動量
+	D3DXVECTOR3 size;							// サイズ
+	D3DXMATRIX mtxWorld;						// ワールドマトリックス
+	OBJECT_TYPE type;							// オブジェクトの種類
+
+	float fWidth;								// 幅
+	float fHeight;								// 高さ
+	float fLength;								// 長さ
+	float fRadius;								// 半径
+
+	bool bUse;									// 使用しているかどうか
+
+	MODEL_DATA GetModel[OBJECT_MAX];			// マテリアルの情報
 
 }Object;
+
+//--------------------------------------------------------------------------------
+// 配置の構造体
+//--------------------------------------------------------------------------------
+typedef struct
+{
+	MODEL_DATA GetModel[OBJECT_MAX];			// マテリアルの情報
+	Object Getobject[MAX_OBJECT];				// オブジェクトの情報
+
+}Object_Set;
 
 //--------------------------------------------------------------------------------
 // プロトタイプ宣言
@@ -45,6 +79,6 @@ void DrawObject(void);
 
 Object *Getobject(void);				// オブジェクトの情報
 
-void SetObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size);		// オブジェクトの設定
+void SetObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size, OBJECT_TYPE type);		// オブジェクトの設定
 
 #endif

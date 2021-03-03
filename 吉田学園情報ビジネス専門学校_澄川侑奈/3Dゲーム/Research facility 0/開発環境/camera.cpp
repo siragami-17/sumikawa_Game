@@ -33,7 +33,7 @@ void InitCamera(void)
 	pDevice = GetDevice();
 
 	// ƒJƒƒ‰‚Ìî•ñ‰Šú‰»
-	g_camera.posV = D3DXVECTOR3(0.0f, 250.0f, -400.0f);
+	g_camera.posV = D3DXVECTOR3(0.0f, 20.0f, -400.0f);
 	//g_camera.posV = D3DXVECTOR3(0.0f, 100.0f, -200.0f);
 	g_camera.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_camera.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);

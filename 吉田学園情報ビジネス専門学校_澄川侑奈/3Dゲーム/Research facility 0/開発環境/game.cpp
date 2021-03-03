@@ -14,7 +14,6 @@
 #include "wall.h"			// 壁
 #include "Key.h"			// 鍵
 #include "bullet.h"			// 弾
-#include "Goal.h"			// ゴール
 #include "mouse.h"			// マウス
 #include "Xcontroller.h"	// Xinput
 #include "fade.h"			// フェード
@@ -24,6 +23,7 @@
 #include "Pause.h"			// ポーズ
 #include "block.h"			// ブロック
 #include "object.h"			// オブジェクト
+#include "object_1.h"
 
 //-------------------------------------------------------------------------------
 //	グローバル変数
@@ -62,6 +62,9 @@ HRESULT InitGame(void)
 
 	// オブジェクト
 	InitObject();
+
+	// オブジェクト
+//	InitObject_1();
 
 	// ゴールの初期化処理
 	InitBlock();
@@ -105,6 +108,9 @@ void UninitGame(void)
 
 	// ゴールの終了処理
 	UninitBlock();
+
+	// オブジェクト
+//	UninitObject_1();
 
 	// オブジェクト
 	UninitObject();
@@ -176,6 +182,9 @@ void UpdateGame(void)
 		// オブジェクト
 		UpdateObject();
 
+		// オブジェクト
+	//	UpdateObject_1();
+
 		// ゴールの更新処理
 		UpdateBlock();
 
@@ -215,6 +224,9 @@ void DrawGame(void)
 
 	// オブジェクト
 	DrawObject();
+
+	// オブジェクト
+//	DrawObject_1();
 
 	// 鍵の描画処理
 	DrawKey();

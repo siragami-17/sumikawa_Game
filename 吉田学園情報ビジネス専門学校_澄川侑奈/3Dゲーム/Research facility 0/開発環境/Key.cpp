@@ -7,6 +7,7 @@
 #include "Key.h"
 #include "player.h"
 #include "shadow.h"
+#include "sound.h"		// サウンド
 
 //--------------------------------------------------------------------------------
 // グローバル変数
@@ -47,7 +48,7 @@ HRESULT InitKey(void)
 	D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Key.png", &g_pTextureKey);
 
 	// 構造体の初期化
-	g_Key.pos = D3DXVECTOR3(100.0f, 30.0f, 0.0f);				// 位置
+	g_Key.pos = D3DXVECTOR3(470.0f, 30.0f, -470.0f);				// 位置
 	g_Key.keyVec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// 位置
 	g_Key.fWidth = 0.0f;										// 幅
 	g_Key.fHeight = 0.0f;										// 高さ
@@ -142,6 +143,9 @@ void UpdateKey(void)
 
 		if (g_Key.fLength < g_Key.fRadius)
 		{// 長さが半径より小さくなった
+
+		 // SEの読み込み
+			PlaySound(SOUND_LABEL_SE_GET);		// 獲得
 
 			//鍵を消す
 			g_Key.bUse = false;

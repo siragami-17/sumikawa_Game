@@ -14,6 +14,7 @@
 #include "wall.h"					// 壁
 #include "sound.h"					// サウンド
 #include "object.h"					// オブジェクト
+#include "object_1.h"
 
 //--------------------------------------------------------------------------------
 //	マクロ定義
@@ -61,7 +62,6 @@ HRESULT InitPlayer(void)
 	g_player.bGetKey = false;																	// 鍵を持っているか
 	g_player.nIdx = SetShadow(D3DXVECTOR3(0.0f, 0.0f, 0.0f));									// 影
 	g_player.oldmotionType = MOTION_NONE;
-
 
 	// モデルの読み込み
 	// テキストファイル読み込み
@@ -287,6 +287,9 @@ void UpdatePlayer(void)
 	// オブジェクト
 	Object  *pObject = Getobject();
 
+	// オブジェクト
+	Object_1  *pObject_1 = Getobject_1();
+
 
 
 	// プレイヤーの移動処理
@@ -444,11 +447,17 @@ void UpdatePlayer(void)
 	// ブロックとプレイヤーの当たり判定
 	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pBlock->pos, pBlock->size);
 
-	// オブジェクトとプレイヤーの当たり判定
+	// 壁とプレイヤーの当たり判定
 	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[0].pos, pObject[0].size);
 	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[1].pos, pObject[1].size);
 	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[2].pos, pObject[2].size);
 	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[3].pos, pObject[3].size);
+
+	// オブジェクトとプレイヤーの当たり判定
+	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[4].pos, pObject[4].size);
+	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[5].pos, pObject[5].size);
+	SetCollision(&g_player.pos, &g_player.posOld, g_player.size, &pObject[6].pos, pObject[6].size);
+
 
 	// 前回の位置を保存
 	g_player.posOld = g_player.pos;
