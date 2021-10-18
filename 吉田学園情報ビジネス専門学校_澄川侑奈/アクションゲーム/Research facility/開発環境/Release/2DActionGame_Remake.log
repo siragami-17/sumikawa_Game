@@ -1,0 +1,38 @@
+﻿  background_00.cpp
+  block.cpp
+  Effect.cpp
+  goal.cpp
+  enemy.cpp
+  fade.cpp
+  Game_00.cpp
+  Key.cpp
+  keyboard.cpp
+  Life.cpp
+  main.cpp
+  mark.cpp
+  pause.cpp
+  Player.cpp
+Player.cpp(97): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+Player.cpp(98): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+Player.cpp(99): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+Player.cpp(100): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+Player.cpp(264): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+Player.cpp(294): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+Player.cpp(295): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+Player.cpp(296): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+Player.cpp(297): warning C4244: '引数': 'double' から 'FLOAT' への変換です。データが失われる可能性があります。
+  Result.cpp
+  Select.cpp
+  sound.cpp
+  StopBG.cpp
+  title.cpp
+  Tutorial.cpp
+  コンパイル中...
+  Xcontroller.cpp
+  コード生成しています。
+  57 of 147 functions (38.8%) were compiled, the rest were copied from previous compilation.
+    15 functions were new in current compilation
+    47 functions had inline decision re-evaluated but remain unchanged
+  コード生成が終了しました。
+  2DActionGame_Remake.vcxproj -> C:\Users\student\Desktop\2D game\2DActionGame_Remake\2DActionGame_Remake.exe
+  2DActionGame_Remake.vcxproj -> C:\Users\student\Desktop\2D game\2DActionGame_Remake\2DActionGame_Remake.pdb (Full PDB)

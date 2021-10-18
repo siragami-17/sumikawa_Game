@@ -1,0 +1,4 @@
+﻿  manager.cpp
+c:\users\student\desktop\2年のプログラム\c++シューティング作り直し\10.16\01_automatic\manager.cpp(75): warning C4800: 'BOOL': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+  01_Automatic.vcxproj -> C:\Users\student\Desktop\2年のプログラム\C++シューティング作り直し\10.16\01_Automatic\Debug\01_Automatic.exe
+  01_Automatic.vcxproj -> C:\Users\student\Desktop\2年のプログラム\C++シューティング作り直し\10.16\01_Automatic\Debug\01_Automatic.pdb (Full PDB)

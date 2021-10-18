@@ -1,0 +1,9 @@
+﻿  manager.cpp
+manager.cpp(75): warning C4800: 'BOOL': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+  コード生成しています。
+  3 of 321 functions ( 0.9%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  コード生成が終了しました。
+  01_Automatic.vcxproj -> C:\Users\student\Desktop\2年のプログラム\C++シューティング作り直し\10.16\01_Automatic\01_Automatic.exe
+  01_Automatic.vcxproj -> C:\Users\student\Desktop\2年のプログラム\C++シューティング作り直し\10.16\01_Automatic\01_Automatic.pdb (Full PDB)
